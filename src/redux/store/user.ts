@@ -1,12 +1,12 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {ActionValue, Dictionary} from "@/utils/type";
-import {DLobby} from "@/data";
+import {DUser} from "@/data";
 
-type T = DLobby;
+type T = DUser;
 const initialState: { [id: string]: T} = {};
 interface EDIT { obj: T, field: keyof T, value: ActionValue }
-export const lobbySlice = createSlice({
-    name: 'lobby',
+export const userSlice = createSlice({
+    name: 'user',
     initialState,
     reducers: {
         set(state: Dictionary<T>, action: PayloadAction<T[]>) {
@@ -30,4 +30,4 @@ export const lobbySlice = createSlice({
     }
 });
 
-export const lobbyReducer = lobbySlice.reducer;
+export const userReducer = userSlice.reducer;

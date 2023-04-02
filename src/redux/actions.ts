@@ -1,8 +1,9 @@
 import {store} from "@/redux/index";
 import {Slice} from "@reduxjs/toolkit";
-import {LLobby} from "@/data/lobby";
 import {lobbySlice} from "@/redux/store/lobby";
 import {ActionObj, ActionValue} from "@/utils/type";
+import {userSlice} from "@/redux/store/user";
+import {LLobby, LUser} from "@/data";
 
 export class ReduxAction {
     static set(objects: ActionObj[], slice: null|Slice): void {
@@ -26,6 +27,7 @@ export class ReduxAction {
     static getSlice(obj: ActionObj): null|Slice {
         switch(obj.classname) {
             case LLobby.name: return lobbySlice;
+            case LUser.name: return userSlice;
             default: return null;
         }
     }

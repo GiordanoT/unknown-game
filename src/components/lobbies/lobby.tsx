@@ -1,43 +1,33 @@
 import React from 'react';
-import {LLobby} from '@/data/lobby';
 import {RootState} from '@/redux';
 import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
-import {MixinAction} from "@/utils/actions";
+import {FirebaseAction} from "@/firebase/actions";
+import {LLobby} from "@/data";
 
 
 export function LobbyComponent(props: AllProps) {
-    const lobbies = props.lobbies;
+    const lobby = props.lobby;
 
-    const add = async(evt: React.MouseEvent<HTMLButtonElement>) => {
-        MixinAction.add(new LLobby('Lobby').raw());
-    }
     const remove = (lobby: LLobby) => {
-        MixinAction.remove(lobby.raw());
+        FirebaseAction.remove(lobby.raw());
     }
 
     return(<div>
-        <h3>Lobbies ({lobbies.length})</h3>
-        <button onClick={add}>add</button>
-        {lobbies.map((lobby, index) => {
-            return(<div key={index}>
-                <button onClick={async(evt) => {await remove(lobby)}}>remove</button>
-                <input value={lobby.name} onChange={(evt) => {lobby.setName(evt.target.value)}} />
-                <label>{lobby.name}</label>
-            </div>);
-        })}
+        <button onClick={async(evt) => {await remove(lobby)}}>remove</button>
+        <input value={lobby.name} onChange={(evt) => {lobby.setName(evt.target.value)}} />
+        <label>{lobby.name}</label>
     </div>);
 }
 
-interface OwnProps {}
-interface StateProps { lobbies: LLobby[] }
+interface OwnProps {lobbyID: string}
+interface StateProps {lobby: LLobby}
 interface DispatchProps {}
 type AllProps = OwnProps & StateProps & DispatchProps;
 
 function mapStateToProps(state: RootState, ownProps: OwnProps): StateProps {
-    const lobbies: LLobby[] = [];
-    for(let pointer in state.lobbies) { lobbies.push(LLobby.fromPointer(pointer)); }
-    return {lobbies};
+    const lobby = LLobby.fromPointer(ownProps.lobbyID);
+    return {lobby};
 }
 
 function mapDispatchToProps(dispatch: Dispatch<any>): DispatchProps {
