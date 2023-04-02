@@ -17,9 +17,6 @@ export function AuthComponent(props: AllProps) {
     const login = (evt: React.MouseEvent<HTMLButtonElement>) => {
         FirebaseAction.login(email, password).then((result) => {setError(!result)});
     }
-    const logout = (evt: React.MouseEvent<HTMLButtonElement>) => {
-        FirebaseAction.logout();
-    }
 
     return(<div>
         {(error) && <h5>error!</h5>}
@@ -28,7 +25,6 @@ export function AuthComponent(props: AllProps) {
         <input onChange={(evt) => {setPassword(evt.target.value)}} type={'password'} />
         <button onClick={signin}>signin</button>
         <button onClick={login}>login</button>
-        <button onClick={logout}>logout</button>
     </div>);
 }
 

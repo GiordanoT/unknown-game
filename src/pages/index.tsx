@@ -1,7 +1,13 @@
 import styles from '@/styles/home.module.scss';
 import Head from 'next/head';
+import React from "react";
+import {FirebaseAction} from "@/firebase/actions";
 
 export default function Home() {
+    const logout = (evt: React.MouseEvent<HTMLButtonElement>) => {
+        FirebaseAction.logout();
+    }
+
     return (<>
         <Head>
             <title>Home</title>
@@ -12,5 +18,6 @@ export default function Home() {
                 <a href={'/' + label}>{label}</a>
             </div>);
         })}
+        <button onClick={logout}>logout</button>
     </>);
 }
