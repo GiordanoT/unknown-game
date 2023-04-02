@@ -3,10 +3,9 @@ import {RootState} from '@/redux';
 import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
 import {FirebaseAction} from "@/firebase/actions";
-import {LUser} from "@/data";
+import Navbar from "@/components/common/Navbar";
 
-export function AuthComponent(props: AllProps) {
-    const user = props.user;
+function AuthComponent(props: AllProps) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(false);
@@ -19,8 +18,8 @@ export function AuthComponent(props: AllProps) {
     }
 
     return(<div>
+        <Navbar />
         {(error) && <h5>error!</h5>}
-        {JSON.stringify(user)}
         <input onChange={(evt) => {setEmail(evt.target.value)}} type={'text'} />
         <input onChange={(evt) => {setPassword(evt.target.value)}} type={'password'} />
         <button onClick={signin}>signin</button>
@@ -29,14 +28,12 @@ export function AuthComponent(props: AllProps) {
 }
 
 interface OwnProps {}
-interface StateProps {user: null|LUser}
+interface StateProps {}
 interface DispatchProps {}
 type AllProps = OwnProps & StateProps & DispatchProps;
 
 function mapStateToProps(state: RootState, ownProps: OwnProps): StateProps {
-    const users = state.users; let user = null;
-    for(let pointer in users) {user = LUser.fromPointer(pointer);}
-    return {user};
+    return {};
 }
 
 function mapDispatchToProps(dispatch: Dispatch<any>): DispatchProps {

@@ -5,6 +5,7 @@ import {RootState} from "@/redux";
 import {Dispatch} from "redux";
 import {connect} from "react-redux";
 import {LLobby} from "@/data";
+import Navbar from "@/components/common/Navbar";
 
 function LobbiesPage(props: AllProps) {
     const lobbies = props.lobbies;
@@ -14,6 +15,7 @@ function LobbiesPage(props: AllProps) {
     }
 
     return (<div>
+        <Navbar />
         <h3>Lobbies ({lobbies.length})</h3>
         <button onClick={add}>add</button>
         {lobbies.map((lobby, index) => {
