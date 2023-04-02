@@ -1,26 +1,29 @@
 import {store} from "@/redux/index";
 import {Slice} from "@reduxjs/toolkit";
-import {LNamed} from "@/data/named";
 import {LLobby} from "@/data/lobby";
 import {lobbySlice} from "@/redux/store/lobby";
+import {ActionObj, ActionValue} from "@/utils/type";
 
-type T = LNamed|LLobby;
 export class ReduxAction {
-    static add(obj: T): void {
-        const slice = ReduxAction.getSlice(obj);
-        if(slice) { store.dispatch(slice.actions.add(obj.raw())); }
+    static set(objects: ActionObj[], slice: null|Slice): void {
+        if(slice) { store.dispatch(slice.actions.set(objects)); }
     }
 
-    static remove(obj: T): void {
+    static add(obj: ActionObj): void {
         const slice = ReduxAction.getSlice(obj);
-        if(slice) { store.dispatch(slice.actions.remove(obj.raw())); }
+        if(slice) { store.dispatch(slice.actions.add(obj)); }
     }
 
-    static edit(obj: T, field: string, value: string|number|boolean): void {
+    static remove(obj: ActionObj): void {
         const slice = ReduxAction.getSlice(obj);
-        if(slice) { store.dispatch(slice.actions.edit({obj: obj.raw(), field, value})); }
+        if(slice) { store.dispatch(slice.actions.remove(obj)); }
     }
-    static getSlice(obj: T): null|Slice {
+
+    static edit(obj: ActionObj, field: string, value: ActionValue): void {
+        const slice = ReduxAction.getSlice(obj);
+        if(slice) { store.dispatch(slice.actions.edit({obj: obj, field, value})); }
+    }
+    static getSlice(obj: ActionObj): null|Slice {
         switch(obj.classname) {
             case LLobby.name: return lobbySlice;
             default: return null;

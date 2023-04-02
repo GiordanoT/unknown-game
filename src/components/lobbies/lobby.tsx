@@ -1,27 +1,19 @@
 import React from 'react';
-import {ReduxAction} from '@/redux/actions';
-import {DLobby, LLobby} from '@/data/lobby';
+import {LLobby} from '@/data/lobby';
 import {RootState} from '@/redux';
 import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
-/* firebase */
-import {doc, setDoc} from "@firebase/firestore";
-import {db} from "@/firebase";
+import {MixinAction} from "@/utils/actions";
 
 
 export function LobbyComponent(props: AllProps) {
     const lobbies = props.lobbies;
 
-    const add = (evt: React.MouseEvent<HTMLButtonElement>) => {
-        ReduxAction.add(new LLobby('Lobby'))
+    const add = async(evt: React.MouseEvent<HTMLButtonElement>) => {
+        MixinAction.add(new LLobby('Lobby').raw());
     }
     const remove = (lobby: LLobby) => {
-        ReduxAction.remove(lobby);
-    }
-
-    const write = async(lobby: LLobby) => {
-        const DB = doc(db, 'lobbies', lobby.id);
-        await setDoc(DB, lobby.raw(),{ merge: true });
+        MixinAction.remove(lobby.raw());
     }
 
     return(<div>
@@ -29,8 +21,7 @@ export function LobbyComponent(props: AllProps) {
         <button onClick={add}>add</button>
         {lobbies.map((lobby, index) => {
             return(<div key={index}>
-                <button onClick={(evt) => {remove(lobby)}}>remove</button>
-                <button onClick={async() => {await write(lobby)}}>write</button>
+                <button onClick={async(evt) => {await remove(lobby)}}>remove</button>
                 <input value={lobby.name} onChange={(evt) => {lobby.setName(evt.target.value)}} />
                 <label>{lobby.name}</label>
             </div>);

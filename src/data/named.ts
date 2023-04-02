@@ -1,5 +1,5 @@
 import {DPointer, LPointer} from "@/data/pointer";
-import {ReduxAction} from "@/redux/actions";
+import {MixinAction} from "@/utils/actions";
 
 export interface DNamed extends DPointer {
     name: string;
@@ -16,7 +16,7 @@ export class LNamed extends LPointer implements DNamed {
 
     setName(name: string): void {
         this.name = name;
-        ReduxAction.edit(this, 'name', this.name);
+        MixinAction.edit(this.raw(), 'name', this.name);
     }
     raw(): DNamed { return {...this}; }
 }

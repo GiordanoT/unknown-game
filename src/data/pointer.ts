@@ -1,5 +1,6 @@
 export interface DPointer {
     id: string;
+    classname: string;
 }
 
 export class LPointer implements DPointer {
