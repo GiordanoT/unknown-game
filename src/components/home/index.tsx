@@ -8,16 +8,17 @@ function HomeComponent(props: AllProps) {
 
     return(<div>
         <Navbar />
+        {JSON.stringify(props.objects)}
     </div>);
 }
 
 interface OwnProps {}
-interface StateProps {}
+interface StateProps {objects: any}
 interface DispatchProps {}
 type AllProps = OwnProps & StateProps & DispatchProps;
 
 function mapStateToProps(state: RootState, ownProps: OwnProps): StateProps {
-    return {};
+    return {objects: state.objects};
 }
 
 function mapDispatchToProps(dispatch: Dispatch<any>): DispatchProps {

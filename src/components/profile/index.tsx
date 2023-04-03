@@ -1,10 +1,9 @@
-import React, {useRef} from "react";
+import React from "react";
 import {RootState} from "@/redux";
 import {Dispatch} from "redux";
 import {connect} from "react-redux";
 import Navbar from "@/components/common/Navbar";
 import {LUser} from "@/data";
-import {U} from "@/utils/functions";
 
 function ProfilePage(props: AllProps) {
     const user = props.user;
@@ -36,7 +35,7 @@ interface DispatchProps {}
 type AllProps = OwnProps & StateProps & DispatchProps;
 
 function mapStateToProps(state: RootState, ownProps: OwnProps): StateProps {
-    const pointer = U.getID(state.users); let user: null|LUser = null;
+    const pointer = state.user.pointer; let user = null;
     if(pointer) user = LUser.fromPointer(pointer);
     return {user};
 }

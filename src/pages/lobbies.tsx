@@ -12,13 +12,13 @@ import {useEffectOnce} from "usehooks-ts";
 
 export default function LobbiesPage() {
     const [isLoading, setLoading] = useState(true);
-    const users: Dictionary<DUser> = useSelector((state: RootState) => state.users);
-    const authGuard = Object.keys(users).length > 0;
+    const authGuard = useSelector((state: RootState) => state.user).pointer !== '';
+
 
     useEffectOnce(() => {
         new Promise(resolve => setTimeout(resolve, 1000)).then(() => setLoading(false));
     });
-    useEffect(() => { FirebaseAction.load('lobbies', lobbySlice); });
+    useEffect(() => { FirebaseAction.load('lobbies'); });
 
     return (<>
         <Head>

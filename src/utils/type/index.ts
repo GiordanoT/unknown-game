@@ -1,7 +1,7 @@
-import {DPointer, DNamed, DLobby, DUser} from "@/data";
+import {DLobby, DUser} from "@/data";
 
 export type Dictionary<T> = { [key: string] : T }
-export type ActionObj = DPointer|DNamed|DLobby|DUser;
+export type ActionObj = DLobby|DUser;
 export type ActionValue = string|number|boolean;
-export interface EDIT<T extends DPointer>{obj: T, field: keyof T, value: any}
+export interface EDIT{obj: ActionObj, field: keyof ActionObj, value: any}
 

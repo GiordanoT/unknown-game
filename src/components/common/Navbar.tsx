@@ -4,11 +4,13 @@ import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
 import {FirebaseAction} from "@/firebase/actions";
 import {useRouter} from "next/router";
+import {LUser} from "@/data";
 
 export function NavbarComponent(props: AllProps) {
-    const router = useRouter()
+    const user = props.user;
+    const router = useRouter();
 
-    const logout = () => {FirebaseAction.logout();}
+    const logout = () => {FirebaseAction.logout(user);}
     const goto = (link: string) => {router.push('/' + link).then();}
 
     return(<nav className={'w-100 bg-dark p-2 d-flex'}>
@@ -22,12 +24,13 @@ export function NavbarComponent(props: AllProps) {
 }
 
 interface OwnProps {}
-interface StateProps {}
+interface StateProps {user : LUser}
 interface DispatchProps {}
 type AllProps = OwnProps & StateProps & DispatchProps;
 
 function mapStateToProps(state: RootState, ownProps: OwnProps): StateProps {
-    return {}
+    const user = LUser.fromPointer(state.user.pointer);
+    return {user}
 }
 
 function mapDispatchToProps(dispatch: Dispatch<any>): DispatchProps {

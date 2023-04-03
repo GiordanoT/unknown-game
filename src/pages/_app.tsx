@@ -7,14 +7,13 @@ import {auth} from "@/firebase";
 import {FirebaseAction} from "@/firebase/actions";
 import {DUser} from "@/data";
 import {ReduxAction} from "@/redux/actions";
-import {userSlice} from "@/redux/store/user";
 
 export default function App({ Component, pageProps }: AppProps) {
 
   onAuthStateChanged(auth, async (user) => {
     if(user) {
       const users = await FirebaseAction.select<DUser>('users', 'email', String(user.email));
-      ReduxAction.set([users[0]], userSlice);
+      if(users.length > 0) ReduxAction.add(users[0]);
     }
   });
 

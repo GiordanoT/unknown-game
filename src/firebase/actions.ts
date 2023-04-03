@@ -2,19 +2,18 @@ import {collection, deleteDoc, doc, getDocs, onSnapshot, query, setDoc, updateDo
 import {auth, db} from '@/firebase/index';
 import {ActionObj, ActionValue} from "@/utils/type";
 import {ReduxAction} from "@/redux/actions";
-import {Slice} from "@reduxjs/toolkit";
 import {DPointer, DUser, LLobby, LUser} from "@/data";
-import {userSlice} from "@/redux/store/user";
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} from "@firebase/auth";
+import {MixinAction} from "@/utils/actions";
 
 export class FirebaseAction {
-    static load(collectionName: string, slice: Slice): void {FirebaseAction._load(collectionName, slice).then();}
-    private static async _load(collectionName: string, slice: Slice): Promise<void> {
+    static load(collectionName: string): void {FirebaseAction._load(collectionName).then();}
+    private static async _load(collectionName: string): Promise<void> {
         const DOC = collection(db, collectionName);
         onSnapshot(DOC, (result) => {
             const objects: ActionObj[] = [];
             for(let doc of result.docs) { objects.push({...doc.data()} as ActionObj); }
-            ReduxAction.set(objects, slice);
+            ReduxAction.set(objects, collectionName);
         });
     }
 
@@ -58,8 +57,7 @@ export class FirebaseAction {
             const result = await createUserWithEmailAndPassword(auth, email, password);
             const name = 'USER' + Date.now();
             const user = new LUser(name, email);
-            ReduxAction.set([user.raw()], userSlice);
-            FirebaseAction.add(user.raw());
+            MixinAction.add(user.raw());
             return true;
         } catch (error) {return false;}
     }
@@ -68,15 +66,15 @@ export class FirebaseAction {
         try {
             const result = await signInWithEmailAndPassword(auth, email, password);
             const users = await FirebaseAction.select<DUser>('users', 'email', email);
-            ReduxAction.set([users[0]], userSlice);
+            if(users.length > 0) ReduxAction.add(users[0]);
             return true;
         } catch (error) {return false;}
     }
 
-    static logout(): void { FirebaseAction._logout().then(); }
-    private static async _logout(): Promise<void> {
+    static logout(user: LUser): void { FirebaseAction._logout(user).then(); }
+    private static async _logout(user: LUser): Promise<void> {
         await signOut(auth).then(() => {
-            ReduxAction.set([], userSlice);
+            ReduxAction.remove(user.raw());
         });
     }
 

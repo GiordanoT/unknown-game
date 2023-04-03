@@ -10,8 +10,8 @@ import Profile from "@/components/profile";
 
 export default function HomePage() {
     const [isLoading, setLoading] = useState(true);
-    const users: Dictionary<DUser> = useSelector((state: RootState) => state.users);
-    const authGuard = Object.keys(users).length > 0;
+    const authGuard = useSelector((state: RootState) => state.user).pointer !== '';
+
 
     useEffectOnce(() => {
         new Promise(resolve => setTimeout(resolve, 1000)).then(() => setLoading(false));

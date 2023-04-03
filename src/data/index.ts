@@ -35,7 +35,6 @@ export class LNamed extends LPointer implements DNamed {
             case 1: FirebaseAction.edit(this.raw(), 'name', this.name); break;
             default: MixinAction.edit(this.raw(), 'name', this.name); break;
         }
-
     }
     raw(): DNamed { return {...this}; }
 }
@@ -50,12 +49,12 @@ export class LLobby extends LNamed implements DLobby {
     }
 
     static fromPointer(pointer: string): LLobby {
-        const objects = store.getState().lobbies;
-        const object = objects[pointer];
+        const objects = store.getState().objects;
+        const object = objects[pointer] as DLobby;
         return new LLobby(object.name, object.id);
     }
 
-    setName(name: string): void { super.setName(name, 1); }
+    setName(name: string): void {super.setName(name, 1)}
     raw(): DLobby { return {...this}; }
 }
 
@@ -71,12 +70,12 @@ export class LUser extends LNamed implements DUser {
     }
 
     static fromPointer(pointer: string): LUser {
-        const objects = store.getState().users;
-        const object = objects[pointer];
+        const objects = store.getState().objects;
+        const object = objects[pointer] as DUser;
         return new LUser(object.name, object.email, object.id);
     }
 
-    setName(name: string): void { super.setName(name, 2); }
+    setName(name: string): void {super.setName(name, 2);}
     raw(): DUser { return {...this}; }
 
 }
