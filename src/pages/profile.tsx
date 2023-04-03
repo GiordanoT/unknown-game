@@ -6,7 +6,7 @@ import {useSelector} from "react-redux";
 import {RootState} from "@/redux";
 import {useEffectOnce} from "usehooks-ts";
 import Auth from "@/components/auth";
-import Home from "@/components/home";
+import Profile from "@/components/profile";
 
 export default function HomePage() {
     const [isLoading, setLoading] = useState(true);
@@ -19,8 +19,8 @@ export default function HomePage() {
 
     return (<>
         <Head>
-            <title>Home</title>
+            <title>Profile</title>
         </Head>
-        {(isLoading) ? <div>Loading...</div> : (authGuard) ? <Home /> : <Auth />}
+        {(isLoading) ? <div>Loading...</div> : (authGuard) ? <Profile /> : <Auth />}
     </>);
 }

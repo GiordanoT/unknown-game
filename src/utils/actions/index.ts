@@ -5,17 +5,17 @@ import {ActionObj, ActionValue} from "@/utils/type";
 export class MixinAction {
     static add(obj: ActionObj): void {
         ReduxAction.add(obj);
-        FirebaseAction.add(obj).then();
+        FirebaseAction.add(obj);
     }
 
     static remove(obj: ActionObj): void {
         ReduxAction.remove(obj);
-        FirebaseAction.remove(obj).then();
+        FirebaseAction.remove(obj);
     }
 
     static edit(obj: ActionObj, field: string, value: ActionValue): void {
         ReduxAction.edit(obj, field, value);
-        FirebaseAction.edit(obj, field, value).then();
+        FirebaseAction.edit(obj, field, value);
     }
 }
 

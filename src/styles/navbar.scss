@@ -1,0 +1,14 @@
+@import 'variables';
+
+.nav-item {
+  display: block;
+  color: whitesmoke;
+  cursor: pointer;
+  padding: 0 0.5em;
+  border-radius: $radius;
+  background-color: indigo;
+}
+
+.nav-item:hover {
+
+}

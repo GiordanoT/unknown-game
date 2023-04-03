@@ -1,4 +1,3 @@
-import Lobby from "@/components/lobbies/lobby";
 import React from "react";
 import {FirebaseAction} from "@/firebase/actions";
 import {RootState} from "@/redux";
@@ -6,6 +5,7 @@ import {Dispatch} from "redux";
 import {connect} from "react-redux";
 import {LLobby} from "@/data";
 import Navbar from "@/components/common/Navbar";
+import Lobby from "@/components/lobbies/Lobby";
 
 function LobbiesPage(props: AllProps) {
     const lobbies = props.lobbies;

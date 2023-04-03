@@ -1,10 +1,9 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {ActionValue, Dictionary} from "@/utils/type";
+import {Dictionary, EDIT} from "@/utils/type";
 import {DUser} from "@/data";
 
 type T = DUser;
 const initialState: { [id: string]: T} = {};
-interface EDIT { obj: T, field: keyof T, value: ActionValue }
 export const userSlice = createSlice({
     name: 'user',
     initialState,
@@ -21,7 +20,7 @@ export const userSlice = createSlice({
             const obj = action.payload;
             delete state[obj.id];
         },
-        edit(state: Dictionary<any>, action: PayloadAction<EDIT>) {
+        edit(state: Dictionary<T>, action: PayloadAction<EDIT<DUser>>) {
             const payload = action.payload;
             const obj = payload.obj;
             const field = payload.field;

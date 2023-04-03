@@ -3,7 +3,6 @@ import {RootState} from '@/redux';
 import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
 import {FirebaseAction} from "@/firebase/actions";
-import Navbar from "@/components/common/Navbar";
 
 function AuthComponent(props: AllProps) {
     const [email, setEmail] = useState('');
@@ -17,13 +16,19 @@ function AuthComponent(props: AllProps) {
         FirebaseAction.login(email, password).then((result) => {setError(!result)});
     }
 
-    return(<div>
-        <Navbar />
-        {(error) && <h5>error!</h5>}
-        <input onChange={(evt) => {setEmail(evt.target.value)}} type={'text'} />
-        <input onChange={(evt) => {setPassword(evt.target.value)}} type={'password'} />
-        <button onClick={signin}>signin</button>
-        <button onClick={login}>login</button>
+    return(<div className={'mx-auto card shadow mt-4'}>
+        <label className={'d-block'}><b>AUTH</b></label>
+        <hr />
+        {(error) && <label className={'d-block text-danger mb-2'}>Invalid Data!</label>}
+        <input className={'d-block input p-1 w-100'} placeholder={'email'}
+               onChange={(evt) => {setEmail(evt.target.value)}} type={'text'} />
+        <input className={'d-block input p-1 w-100 mt-1'} placeholder={'password'}
+               onChange={(evt) => {setPassword(evt.target.value)}} type={'password'} />
+        <div className={'d-flex mt-3'}>
+            <button className={'d-block btn btn-primary'} onClick={login}>Login</button>
+            <button className={'d-block btn btn-primary ms-auto'} onClick={signin}>Signin</button>
+        </div>
+
     </div>);
 }
 

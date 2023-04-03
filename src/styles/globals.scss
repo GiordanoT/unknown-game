@@ -1,0 +1,34 @@
+@import 'variables';
+@import 'bootstrap';
+@import 'navbar';
+
+html, body {
+  background-color: whitesmoke;
+  margin: 0;
+}
+
+label {
+  font-size: 0.95rem;
+}
+
+.round {
+  border-radius: $radius;
+}
+
+.circle {
+  border-radius: 999px;
+}
+
+.bg-smoke {
+  background-color: whitesmoke;
+}
+
+.card {
+  padding: 1rem 2rem;
+  background-color: white;
+  width:  25%; height: min-content;
+  text-align: center;
+  border-radius: $radius;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  display: block;
+}

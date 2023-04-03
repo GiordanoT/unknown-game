@@ -1,0 +1,23 @@
+@import 'node_modules/bootstrap/dist/css/bootstrap.min.css';
+@import 'node_modules/bootstrap-icons/font/bootstrap-icons.css';
+@import 'variables';
+
+.input {
+  outline: none;
+  font-size: 0.9rem;
+  appearance: none;
+  height: min-content;
+  border-radius: $radius;
+  border: 1px solid $border-color;
+}
+
+.input:focus {
+  border: 1px dashed $border-color;
+}
+
+.btn {
+  padding: 0.25em 0.50em;
+  line-height: normal;
+  border-radius: $radius;
+  font-size: 0.95em;
+}

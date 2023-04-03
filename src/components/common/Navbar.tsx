@@ -2,29 +2,32 @@ import React from 'react';
 import {RootState} from '@/redux';
 import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
-import {LUser} from "@/data";
 import {FirebaseAction} from "@/firebase/actions";
+import {useRouter} from "next/router";
 
 export function NavbarComponent(props: AllProps) {
-    const user = props.user;
+    const router = useRouter()
 
     const logout = () => {FirebaseAction.logout();}
+    const goto = (link: string) => {router.push('/' + link).then();}
 
-    return(<div>
-        {JSON.stringify(user)}
-        <button onClick={logout}>logout</button>
-    </div>);
+    return(<nav className={'w-100 bg-dark p-2 d-flex'}>
+        <button onClick={() => goto('')} className={'btn btn-primary'}>Home</button>
+        <button onClick={() => goto('lobbies')} className={'btn btn-primary ms-2'}>Lobbies</button>
+        <button onClick={() => goto('profile')} className={'btn btn-primary ms-2'}>Profile</button>
+        <button onClick={logout} className={'btn btn-danger ms-auto'}>Logout</button>
+    </nav>);
+
+
 }
 
 interface OwnProps {}
-interface StateProps {user: null|LUser}
+interface StateProps {}
 interface DispatchProps {}
 type AllProps = OwnProps & StateProps & DispatchProps;
 
 function mapStateToProps(state: RootState, ownProps: OwnProps): StateProps {
-    const users = state.users; let user: null|LUser = null;
-    for(let pointer in users) {user = LUser.fromPointer(pointer);}
-    return {user};
+    return {}
 }
 
 function mapDispatchToProps(dispatch: Dispatch<any>): DispatchProps {
