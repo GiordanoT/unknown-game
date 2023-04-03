@@ -2,6 +2,7 @@ import {ReduxAction} from "@/redux/actions";
 import {FirebaseAction} from "@/firebase/actions";
 import {MixinAction} from "@/utils/actions";
 import {store} from "@/redux";
+import {U} from "@/utils/functions";
 
 /* POINTER */
 export interface DPointer {id: string; classname: string;}
@@ -10,7 +11,7 @@ export class LPointer implements DPointer {
     id: string;
 
     constructor(id?: string) {
-        this.id = (id) ? id : 'POINTER_' + Date.now();
+        this.id = (id) ? id : 'POINTER_' + Date.now() + '_' + U.getRandomString(5);
     }
 
     raw(): DPointer {return {...this};}

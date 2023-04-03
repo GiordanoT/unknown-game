@@ -10,8 +10,8 @@ export function NavbarComponent(props: AllProps) {
     const user = props.user;
     const router = useRouter();
 
-    const logout = () => {FirebaseAction.logout(user);}
-    const goto = (link: string) => {router.push('/' + link).then();}
+    const logout = () => {if(user) FirebaseAction.logout(user)}
+    const goto = (link: string) => {router.push('/' + link).then()}
 
     return(<nav className={'w-100 bg-dark p-2 d-flex'}>
         <button onClick={() => goto('')} className={'btn btn-primary'}>Home</button>
@@ -24,12 +24,13 @@ export function NavbarComponent(props: AllProps) {
 }
 
 interface OwnProps {}
-interface StateProps {user : LUser}
+interface StateProps {user : null|LUser}
 interface DispatchProps {}
 type AllProps = OwnProps & StateProps & DispatchProps;
 
 function mapStateToProps(state: RootState, ownProps: OwnProps): StateProps {
-    const user = LUser.fromPointer(state.user.pointer);
+    const pointer = state.user.pointer; let user: null|LUser = null;
+    if(pointer) user = LUser.fromPointer(pointer);
     return {user}
 }
 

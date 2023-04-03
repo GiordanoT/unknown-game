@@ -5,6 +5,7 @@ import {useSelector} from "react-redux";
 import {RootState} from "@/redux";
 import Home from "@/pages/index";
 import {useEffectOnce} from "usehooks-ts";
+import Loading from "@/components/common/Loading";
 
 export default function AuthPage() {
     const [isLoading, setLoading] = useState(true);
@@ -18,7 +19,7 @@ export default function AuthPage() {
         <Head>
             <title>{(authGuard) ? 'Home' : 'Auth'}</title>
         </Head>
-        {(isLoading) ? <div>Loading...</div> : (authGuard)? <Home /> : <Auth />}
+        {(isLoading) ? <Loading /> : (authGuard)? <Home /> : <Auth />}
     </>);
 
 }

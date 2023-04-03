@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {ActionObj, Dictionary, EDIT} from "@/utils/type";
+import {ActionObj, Dictionary, EDIT, SET} from "@/utils/type";
 
 type T = ActionObj;
 const initialState: { [id: string]: T} = {};
@@ -7,8 +7,9 @@ export const objectSlice = createSlice({
     name: 'object',
     initialState,
     reducers: {
-        set(state: Dictionary<T>, action: PayloadAction<T[]>) {
-
+        set(state: Dictionary<T>, action: PayloadAction<SET>) {
+            const payload = action.payload;
+            state[payload.id] = payload.obj;
         },
         add(state: Dictionary<T>, action: PayloadAction<T>){
             const obj = action.payload;

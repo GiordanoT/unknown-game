@@ -7,13 +7,13 @@ import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} fro
 import {MixinAction} from "@/utils/actions";
 
 export class FirebaseAction {
-    static load(collectionName: string): void {FirebaseAction._load(collectionName).then();}
-    private static async _load(collectionName: string): Promise<void> {
+    static load(collectionName: string, className: string): void {FirebaseAction._load(collectionName, className).then();}
+    private static async _load(collectionName: string, className: string): Promise<void> {
         const DOC = collection(db, collectionName);
         onSnapshot(DOC, (result) => {
             const objects: ActionObj[] = [];
-            for(let doc of result.docs) { objects.push({...doc.data()} as ActionObj); }
-            ReduxAction.set(objects, collectionName);
+            for(let doc of result.docs) objects.push({...doc.data()} as ActionObj);
+            ReduxAction.set(objects, className);
         });
     }
 

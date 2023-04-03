@@ -6,9 +6,10 @@ import {lobbySlice} from "@/redux/store/lobby";
 import {RootState} from "@/redux";
 import {useSelector} from "react-redux";
 import {Dictionary} from "@/utils/type";
-import {DUser} from "@/data";
+import {DUser, LLobby} from "@/data";
 import Auth from "@/components/auth";
 import {useEffectOnce} from "usehooks-ts";
+import Loading from "@/components/common/Loading";
 
 export default function LobbiesPage() {
     const [isLoading, setLoading] = useState(true);
@@ -18,13 +19,13 @@ export default function LobbiesPage() {
     useEffectOnce(() => {
         new Promise(resolve => setTimeout(resolve, 1000)).then(() => setLoading(false));
     });
-    useEffect(() => { FirebaseAction.load('lobbies'); });
+    useEffect(() => { FirebaseAction.load('lobbies', LLobby.name); });
 
     return (<>
         <Head>
             <title>{(authGuard) ? 'Lobbies' : 'Auth'}</title>
         </Head>
-        {(isLoading) ? <div>Loading...</div> : (authGuard) ? <Lobbies /> : <Auth />}
+        {(isLoading) ? <Loading /> : (authGuard) ? <Lobbies /> : <Auth />}
     </>);
 }
 

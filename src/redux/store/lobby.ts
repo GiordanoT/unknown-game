@@ -6,7 +6,6 @@ export const lobbySlice = createSlice({
     name: 'lobby',
     initialState,
     reducers: {
-        set(state: T){state.pointers = []},
         add(state: T, action: PayloadAction<string>){
             const pointer = action.payload;
             state.pointers.push(pointer);

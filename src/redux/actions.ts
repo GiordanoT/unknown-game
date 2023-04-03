@@ -7,14 +7,17 @@ import {LLobby, LUser} from "@/data";
 import {objectSlice} from "@/redux/store/object";
 
 export class ReduxAction {
-    static set(objects: ActionObj[], collection: string): void {
-        // todo: calculate delta and improve this
-        const oldObjects = store.getState().objects;
-        for(let pointer in oldObjects) {
-            const obj = oldObjects[pointer];
-            if(obj.classname !== LUser.name) ReduxAction.remove(oldObjects[pointer]);
+    static set(newObjects: ActionObj[], classname: string): void {
+        const dict = store.getState().objects; const oldObjects: ActionObj[] = [];
+        for(let pointer in dict) {
+            const obj = dict[pointer];
+            if (obj.classname === classname) oldObjects.push(obj);
         }
-        for(let obj of objects) ReduxAction.add(obj);
+        for(let object of oldObjects) if(!newObjects.includes(object)) ReduxAction.remove(object);
+        for(let object of newObjects) {
+            if(!oldObjects.includes(object)) ReduxAction.add(object);
+            else store.dispatch(objectSlice.actions.set({id: object.id, obj: object}));
+        }
     }
 
     static add(obj: ActionObj): void {
@@ -40,12 +43,6 @@ export class ReduxAction {
             default: return null;
         }
     }
-    static getSliceByCollection(collection: string): null|Slice {
-        switch(collection) {
-            case 'lobbies': return lobbySlice;
-            case 'users': return userSlice;
-            default: return null;
-        }
-    }
+
 }
 

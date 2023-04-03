@@ -1,12 +1,11 @@
 import Head from 'next/head';
 import React, {useState} from "react";
-import {Dictionary} from "@/utils/type";
-import {DUser} from "@/data";
 import {useSelector} from "react-redux";
 import {RootState} from "@/redux";
 import {useEffectOnce} from "usehooks-ts";
 import Auth from "@/components/auth";
 import Profile from "@/components/profile";
+import Loading from "@/components/common/Loading";
 
 export default function HomePage() {
     const [isLoading, setLoading] = useState(true);
@@ -21,6 +20,6 @@ export default function HomePage() {
         <Head>
             <title>Profile</title>
         </Head>
-        {(isLoading) ? <div>Loading...</div> : (authGuard) ? <Profile /> : <Auth />}
+        {(isLoading) ? <Loading /> : (authGuard) ? <Profile /> : <Auth />}
     </>);
 }
