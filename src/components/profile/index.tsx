@@ -11,7 +11,7 @@ function ProfilePage(props: AllProps) {
 
     const editName = (evt: React.ChangeEvent<HTMLInputElement>) => {
         const newName = evt.target.value;
-        if(newName) user.setName(newName);
+        if(newName) user?.setName(newName);
     }
 
     return (<div>
@@ -21,23 +21,23 @@ function ProfilePage(props: AllProps) {
             <hr />
             <div className={'d-flex mt-2'}>
                 <label className={'my-auto'}><b>Name</b>:</label>
-                <input onChange={editName} value={user.name} className={'input ms-auto'} type={'text'} />
+                <input onChange={editName} value={user?.name} className={'input ms-auto'} type={'text'} />
             </div>
             <div className={'d-flex mt-2'}>
                 <label className={'my-auto'}><b>Email</b>:</label>
-                <input defaultValue={user.email} className={'input ms-auto'} type={'email'} readOnly={true} />
+                <input defaultValue={user?.email} className={'input ms-auto'} type={'email'} readOnly={true} />
             </div>
         </div>
     </div>);
 }
 interface OwnProps {}
-interface StateProps {user: LUser}
+interface StateProps {user: null|LUser}
 interface DispatchProps {}
 type AllProps = OwnProps & StateProps & DispatchProps;
 
 function mapStateToProps(state: RootState, ownProps: OwnProps): StateProps {
-    const pointer = U.getID(state.users);
-    const user = LUser.fromPointer(pointer);
+    const pointer = U.getID(state.users); let user: null|LUser = null;
+    if(pointer) user = LUser.fromPointer(pointer);
     return {user};
 }
 

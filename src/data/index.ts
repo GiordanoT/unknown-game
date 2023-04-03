@@ -49,11 +49,10 @@ export class LLobby extends LNamed implements DLobby {
         super(name, (id) ? id : undefined);
     }
 
-    static fromPointer(pointer: string): null|LLobby {
+    static fromPointer(pointer: string): LLobby {
         const objects = store.getState().lobbies;
         const object = objects[pointer];
-        if(object) return new LLobby(object.name, object.id);
-        return null;
+        return new LLobby(object.name, object.id);
     }
 
     setName(name: string): void { super.setName(name, 1); }
@@ -71,11 +70,10 @@ export class LUser extends LNamed implements DUser {
         this.email = email;
     }
 
-    static fromPointer(pointer: string): null|LUser {
+    static fromPointer(pointer: string): LUser {
         const objects = store.getState().users;
         const object = objects[pointer];
-        if(object) return new LUser(object.name, object.email, object.id);
-        return null;
+        return new LUser(object.name, object.email, object.id);
     }
 
     setName(name: string): void { super.setName(name, 2); }

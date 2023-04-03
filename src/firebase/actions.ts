@@ -75,8 +75,9 @@ export class FirebaseAction {
 
     static logout(): void { FirebaseAction._logout().then(); }
     private static async _logout(): Promise<void> {
-        await signOut(auth);
-        ReduxAction.set([], userSlice);
+        await signOut(auth).then(() => {
+            ReduxAction.set([], userSlice);
+        });
     }
 
     static async select<T extends DPointer>(path: string, field?: keyof T, value?: ActionValue): Promise<T[]> {
