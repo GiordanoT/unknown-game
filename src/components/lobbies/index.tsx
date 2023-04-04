@@ -1,5 +1,4 @@
 import React from "react";
-import {FirebaseAction} from "@/firebase/actions";
 import {RootState} from "@/redux";
 import {Dispatch} from "redux";
 import {connect} from "react-redux";

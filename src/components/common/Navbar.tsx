@@ -17,7 +17,10 @@ export function NavbarComponent(props: AllProps) {
         <button onClick={() => goto('')} className={'btn btn-primary'}>Home</button>
         <button onClick={() => goto('lobbies')} className={'btn btn-primary ms-2'}>Lobbies</button>
         <button onClick={() => goto('profile')} className={'btn btn-primary ms-2'}>Profile</button>
-        <button onClick={logout} className={'btn btn-danger ms-auto'}>Logout</button>
+        <div className={'ms-auto'}>
+            <label className={'text-white my-auto me-3'}>{user?.name}</label>
+            <button onClick={logout} className={'btn btn-danger'}>Logout</button>
+        </div>
     </nav>);
 
 

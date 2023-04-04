@@ -26,7 +26,7 @@ function AuthComponent(props: AllProps) {
                onChange={(evt) => {setPassword(evt.target.value)}} type={'password'} />
         <div className={'d-flex mt-3'}>
             <button className={'d-block btn btn-primary'} onClick={login}>Login</button>
-            <button className={'d-block btn btn-primary ms-auto'} onClick={signin}>Signin</button>
+            <button className={'d-block btn btn-primary ms-auto'} onClick={signin} disabled={true}>Signin</button>
         </div>
 
     </div>);
