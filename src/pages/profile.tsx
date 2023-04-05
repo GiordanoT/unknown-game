@@ -17,9 +17,7 @@ export default function HomePage() {
     });
 
     return (<>
-        <Head>
-            <title>Profile</title>
-        </Head>
+        <Head><title>{(authGuard) ? 'Profile' : 'Auth'}</title></Head>
         {(isLoading) ? <Loading /> : (authGuard) ? <Profile /> : <Auth />}
     </>);
 }

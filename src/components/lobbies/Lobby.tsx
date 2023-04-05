@@ -3,7 +3,8 @@ import {RootState} from '@/redux';
 import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
 import {FirebaseAction} from "@/firebase/actions";
-import {LLobby} from "@/data";
+import {DLobby, LLobby} from "@/data";
+import {Pointer} from "@/utils/type";
 
 
 export function LobbyComponent(props: AllProps) {
@@ -20,7 +21,7 @@ export function LobbyComponent(props: AllProps) {
     </div>);
 }
 
-interface OwnProps {lobbyID: string}
+interface OwnProps {lobbyID: Pointer<DLobby>}
 interface StateProps {lobby: LLobby}
 interface DispatchProps {}
 type AllProps = OwnProps & StateProps & DispatchProps;

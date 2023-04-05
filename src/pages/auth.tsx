@@ -16,9 +16,7 @@ export default function AuthPage() {
     })
 
     return(<>
-        <Head>
-            <title>{(authGuard) ? 'Home' : 'Auth'}</title>
-        </Head>
+        <Head><title>{(!authGuard) ? 'Auth' : 'Home'}</title></Head>
         {(isLoading) ? <Loading /> : (authGuard)? <Home /> : <Auth />}
     </>);
 

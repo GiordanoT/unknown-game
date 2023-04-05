@@ -3,14 +3,15 @@ import {FirebaseAction} from "@/firebase/actions";
 import {MixinAction} from "@/utils/actions";
 import {store} from "@/redux";
 import {U} from "@/utils/functions";
+import {Pointer} from "@/utils/type";
 
 /* POINTER */
-export interface DPointer {id: string; classname: string;}
+export interface DPointer {id: Pointer; classname: string;}
 export class LPointer implements DPointer {
     classname = LPointer.name;
-    id: string;
+    id: Pointer;
 
-    constructor(id?: string) {
+    constructor(id?: Pointer) {
         this.id = (id) ? id : 'POINTER_' + Date.now() + '_' + U.getRandomString(5);
     }
 
@@ -24,7 +25,7 @@ export class LNamed extends LPointer implements DNamed {
     classname = LNamed.name;
     name: string;
 
-    constructor(name: string, id?: string) {
+    constructor(name: string, id?: Pointer) {
         super((id) ? id : undefined);
         this.name = name;
     }
@@ -45,7 +46,7 @@ export interface DLobby extends DNamed {}
 export class LLobby extends LNamed implements DLobby {
     classname = LLobby.name;
 
-    constructor(name: string, id?: string) {
+    constructor(name: string, id?: Pointer) {
         super(name, (id) ? id : undefined);
     }
 
@@ -65,7 +66,7 @@ export class LUser extends LNamed implements DUser {
     classname = LUser.name;
     email: string;
 
-    constructor(name: string, email: string, id?: string) {
+    constructor(name: string, email: string, id?: Pointer) {
         super(name, (id) ? id : undefined);
         this.email = email;
     }

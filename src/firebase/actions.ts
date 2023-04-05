@@ -1,14 +1,70 @@
-import {collection, deleteDoc, doc, getDocs, onSnapshot, query, setDoc, updateDoc, where} from '@firebase/firestore';
+import {
+    collection,
+    CollectionReference,
+    deleteDoc,
+    doc, DocumentData,
+    getDocs,
+    onSnapshot,
+    query, QueryFieldFilterConstraint,
+    setDoc,
+    updateDoc,
+    where
+} from '@firebase/firestore';
 import {auth, db} from '@/firebase/index';
-import {ActionObj, ActionValue} from "@/utils/type";
+import {ActionObj, ActionValue, Pointer} from "@/utils/type";
 import {ReduxAction} from "@/redux/actions";
 import {DPointer, DUser, LLobby, LUser} from "@/data";
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} from "@firebase/auth";
 import {MixinAction} from "@/utils/actions";
+import {isArray} from "util";
 
 export class FirebaseAction {
-    static load(collectionName: string, className: string): void {FirebaseAction._load(collectionName, className).then();}
-    private static async _load(collectionName: string, className: string): Promise<void> {
+
+
+    private static async _selectWithConditions<T>(DOC: CollectionReference, fields: (keyof T)[], values: ActionValue[]): Promise<T[]> {
+        if(fields.length !== values.length) return [];
+        const objects: T[] = []; const length = fields.length;
+        const conditions: QueryFieldFilterConstraint[] = [];
+        let index = 0;
+        while(index < length) {
+            const field = fields[index]; const value = values[index];
+            conditions.push(where(String(field), '==', value));
+            index += 1;
+        }
+        const q = query(DOC, ...conditions);
+        const qs = await getDocs(q);
+        qs.forEach((doc) => {objects.push({...doc.data()} as T)});
+        return objects;
+    }
+
+    private static async _selectWithoutConditions<T>(DOC: CollectionReference): Promise<T[]> {
+        const objects: T[] = [];
+        const q = query(DOC); const qs = await getDocs(q);
+        qs.forEach((doc) => {objects.push({...doc.data()} as T)});
+        return objects
+    }
+
+    static async select<T extends DPointer>(collectionName: string, fields?: keyof T | (keyof T)[], values?: ActionValue|ActionValue[]): Promise<T[]> {
+        const DOC = collection(db, collectionName);
+        if(fields && values) {
+            const _fields = (Array.isArray(fields)) ? fields : [fields];
+            const _values = (Array.isArray(values)) ? values : [values];
+            return await FirebaseAction._selectWithConditions(DOC, _fields, _values);
+        }
+        else return await FirebaseAction._selectWithoutConditions(DOC);
+    }
+
+    static loadDocument(collectionName: string, id: Pointer, className: string): void {FirebaseAction._loadDocument(collectionName, id, className).then();}
+    private static async _loadDocument(collectionName: string, id: Pointer, className: string): Promise<void> {
+        const DOC = doc(db, collectionName, id);
+        onSnapshot(DOC, (result) => {
+            const objects = [{...result.data()} as ActionObj];
+            ReduxAction.set(objects, className);
+        });
+    }
+
+    static loadCollection(collectionName: string, className: string): void {FirebaseAction._loadCollection(collectionName, className).then();}
+    private static async _loadCollection(collectionName: string, className: string): Promise<void> {
         const DOC = collection(db, collectionName);
         onSnapshot(DOC, (result) => {
             const objects: ActionObj[] = [];
@@ -73,23 +129,8 @@ export class FirebaseAction {
 
     static logout(user: LUser): void { FirebaseAction._logout(user).then(); }
     private static async _logout(user: LUser): Promise<void> {
-        await signOut(auth).then(() => {
-            ReduxAction.remove(user.raw());
-        });
-    }
-
-    static async select<T extends DPointer>(path: string, field?: keyof T, value?: ActionValue): Promise<T[]> {
-        const objects: T[] = [];
-        const DOC = collection(db, path);
-        if(field && value !== undefined) {
-            const q = query(DOC, where(String(field), '==', value));
-            const qs = await getDocs(q);
-            qs.forEach((doc) => {objects.push({...doc.data()} as T)});
-        } else {
-            const q = query(DOC); const qs = await getDocs(q);
-            qs.forEach((doc) => {objects.push({...doc.data()} as T)});
-        }
-        return objects
+        const result = await signOut(auth);
+        ReduxAction.remove(user.raw());
     }
 
 }
