@@ -12,11 +12,12 @@ import {
     where
 } from '@firebase/firestore';
 import {auth, db} from '@/firebase/index';
-import {DObject, Value, CONSTRAINT, Pointer} from "@/utils/type";
-import {ReduxAction} from "@/redux/actions";
-import {DPointer, DUser, LLobby, LUser} from "@/data";
+import {CONSTRAINT, DObject, Pointer, Value} from "@/utils/type";
+import {DPointer, DUser, LUser} from "@/data";
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} from "@firebase/auth";
 import {MixinAction} from "@/utils/actions";
+import {ReduxObjAction} from "@/redux/actions/object";
+import {U} from "@/utils/functions";
 
 export class FirebaseAction {
 
@@ -61,7 +62,7 @@ export class FirebaseAction {
         const DOC = doc(db, collectionName, id);
         onSnapshot(DOC, (result) => {
             const objects = [{...result.data()} as DObject];
-            ReduxAction.load(objects, className);
+            ReduxObjAction.load(objects, className);
         });
     }
 
@@ -70,13 +71,13 @@ export class FirebaseAction {
         onSnapshot(DOC, (result) => {
             const objects: DObject[] = [];
             for(let doc of result.docs) objects.push({...doc.data()} as DObject);
-            ReduxAction.load(objects, className);
+            ReduxObjAction.load(objects, className);
         });
     }
 
     static add(obj: DObject): void {FirebaseAction._add(obj).then();}
     private static async _add(obj: DObject): Promise<void> {
-        const collection = FirebaseAction.getCollection(obj);
+        const collection = U.getCollection(obj);
         if(collection) {
             const DOC = doc(db, collection, obj.id);
             await setDoc(DOC, obj,{merge: false});
@@ -85,7 +86,7 @@ export class FirebaseAction {
 
     static remove(obj: DObject): void {FirebaseAction._remove(obj).then();}
     private static async _remove(obj: DObject): Promise<void> {
-        const collection = FirebaseAction.getCollection(obj);
+        const collection = U.getCollection(obj);
         if(collection) {
             const DOC = doc(db, collection, obj.id);
             await deleteDoc(DOC);
@@ -94,7 +95,7 @@ export class FirebaseAction {
 
     static edit(obj: DObject, field: string, Value: Value): void {FirebaseAction._edit(obj, field, Value).then();}
     private static async _edit(obj: DObject, field: string, Value: Value): Promise<void> {
-        const collection = FirebaseAction.getCollection(obj);
+        const collection = U.getCollection(obj);
         if(collection) {
             const DOC = doc(db, collection, obj.id);
             await updateDoc(DOC, field, Value);
@@ -116,7 +117,7 @@ export class FirebaseAction {
             await signInWithEmailAndPassword(auth, email, password);
             const constraint: CONSTRAINT<DUser> = {field: 'email', operator: '==', value: email};
             const users = await FirebaseAction.select<DUser>('users', constraint);
-            if(users.length > 0) ReduxAction.add(users[0]);
+            if(users.length > 0) ReduxObjAction.add(users[0]);
             return true;
         } catch (error) {return false;}
     }
@@ -124,15 +125,7 @@ export class FirebaseAction {
     static logout(user: LUser): void { FirebaseAction._logout(user).then(); }
     private static async _logout(user: LUser): Promise<void> {
         await signOut(auth);
-        ReduxAction.remove(user.raw());
-    }
-
-    static getCollection(obj: DObject): null|string {
-        switch(obj.classname) {
-            case LLobby.name: return 'lobbies';
-            case LUser.name: return 'users';
-            default: return null;
-        }
+        ReduxObjAction.remove(user.raw());
     }
 
 }

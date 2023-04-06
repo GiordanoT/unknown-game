@@ -1,20 +1,26 @@
 import {FirebaseAction} from "@/firebase/actions";
-import {ReduxAction} from "@/redux/actions";
-import {ActionObj, ActionValue} from "@/utils/type";
+import {ReduxObjAction} from "@/redux/actions/object";
+import {DObject, Value} from "@/utils/type";
+
+export class Action {
+    static Redux = 0;
+    static Firebase = 1;
+    static Mixin = 2;
+}
 
 export class MixinAction {
-    static add(obj: ActionObj): void {
-        ReduxAction.add(obj);
+    static add(obj: DObject): void {
+        ReduxObjAction.add(obj);
         FirebaseAction.add(obj);
     }
 
-    static remove(obj: ActionObj): void {
-        ReduxAction.remove(obj);
+    static remove(obj: DObject): void {
+        ReduxObjAction.remove(obj);
         FirebaseAction.remove(obj);
     }
 
-    static edit(obj: ActionObj, field: string, value: ActionValue): void {
-        ReduxAction.edit(obj, field, value);
+    static edit(obj: DObject, field: keyof DObject, value: Value): void {
+        ReduxObjAction.edit(obj, field, value);
         FirebaseAction.edit(obj, field, value);
     }
 }

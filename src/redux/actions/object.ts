@@ -1,13 +1,10 @@
-import {store} from "@/redux/index";
-import {Slice} from "@reduxjs/toolkit";
-import {lobbySlice} from "@/redux/store/lobby";
+import {store} from "@/redux";
 import {DObject, Value} from "@/utils/type";
-import {userSlice} from "@/redux/store/user";
-import {LLobby, LUser} from "@/data";
 import {objectSlice} from "@/redux/store/object";
 import {U} from "@/utils/functions";
+import {ReduxRootAction} from "@/redux/actions/root";
 
-export class ReduxAction {
+export class ReduxObjAction {
     static load(newObjects: DObject[], classname: string): void {
         const dict = store.getState().objects; const oldObjects: DObject[] = [];
         for(let pointer in dict) {
@@ -16,41 +13,32 @@ export class ReduxAction {
         }
         for(let oldObject of oldObjects) {
             const newObject = newObjects.find((obj) => {return obj.id === oldObject.id});
-            if(!newObject) ReduxAction.remove(oldObject);
+            if(!newObject) ReduxObjAction.remove(oldObject);
         }
         for(let newObject of newObjects) {
             const oldObject = oldObjects.find((obj) => {return obj.id === newObject.id});
-            if(!oldObject) ReduxAction.add(newObject);
+            if(!oldObject) ReduxObjAction.add(newObject);
             else U.delta(oldObject, newObject);
         }
     }
 
     static add(obj: DObject): void {
         store.dispatch(objectSlice.actions.add(obj));
-        const slice = ReduxAction.getSlice(obj);
-        if(slice) store.dispatch(slice.actions.add(obj.id));
-        U.log('ADD', obj);
+        U.log('ADD OBJ', obj);
+        const slice = U.getSlice(obj);
+        if(slice) ReduxRootAction.add(slice, obj.id);
     }
 
     static remove(obj: DObject): void {
+        const slice = U.getSlice(obj);
+        if(slice) ReduxRootAction.remove(slice, obj.id);
         store.dispatch(objectSlice.actions.remove(obj));
-        const slice = ReduxAction.getSlice(obj);
-        if(slice) store.dispatch(slice.actions.remove(obj.id));
-        U.log('REMOVE', obj);
+        U.log('REMOVE OBJ', obj);
     }
 
     static edit(obj: DObject, field: keyof DObject, value: Value): void {
         store.dispatch(objectSlice.actions.edit({obj, field, value}));
-        U.log('EDIT', obj);
+        U.log('EDIT OBJ', obj);
     }
-
-    static getSlice(obj: DObject): null|Slice {
-        switch(obj.classname) {
-            case LLobby.name: return lobbySlice;
-            case LUser.name: return userSlice;
-            default: return null;
-        }
-    }
-
 }
 

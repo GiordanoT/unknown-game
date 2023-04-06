@@ -1,9 +1,9 @@
-import {ReduxAction} from "@/redux/actions";
 import {FirebaseAction} from "@/firebase/actions";
-import {MixinAction} from "@/utils/actions";
+import {Action, MixinAction} from "@/utils/actions";
 import {store} from "@/redux";
 import {U} from "@/utils/functions";
 import {Pointer} from "@/utils/type";
+import {ReduxObjAction} from "@/redux/actions/object";
 
 /* POINTER */
 export interface DPointer {id: Pointer; classname: string;}
@@ -32,12 +32,9 @@ export class LNamed extends LPointer implements DNamed {
 
     setName(name: string, layer: number): void {
         this.name = name;
-        switch(layer) {
-            case 0: ReduxAction.edit(this.raw(), 'name', this.name); break;
-            case 1: FirebaseAction.edit(this.raw(), 'name', this.name); break;
-            default: MixinAction.edit(this.raw(), 'name', this.name); break;
-        }
+        U.actionSwitch(this.raw(), 'name', name, layer);
     }
+
     raw(): DNamed { return {...this}; }
 }
 
@@ -56,7 +53,7 @@ export class LLobby extends LNamed implements DLobby {
         return new LLobby(object.name, object.id);
     }
 
-    setName(name: string): void {super.setName(name, 1)}
+    setName(name: string): void {super.setName(name, Action.Mixin)}
     raw(): DLobby { return {...this}; }
 }
 
@@ -77,7 +74,7 @@ export class LUser extends LNamed implements DUser {
         return new LUser(object.name, object.email, object.id);
     }
 
-    setName(name: string): void {super.setName(name, 2);}
+    setName(name: string): void {super.setName(name, Action.Mixin);}
     raw(): DUser { return {...this}; }
 
 }
