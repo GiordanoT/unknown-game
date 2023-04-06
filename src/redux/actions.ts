@@ -1,15 +1,15 @@
 import {store} from "@/redux/index";
 import {Slice} from "@reduxjs/toolkit";
 import {lobbySlice} from "@/redux/store/lobby";
-import {ActionObj, ActionValue} from "@/utils/type";
+import {DObject, Value} from "@/utils/type";
 import {userSlice} from "@/redux/store/user";
 import {LLobby, LUser} from "@/data";
 import {objectSlice} from "@/redux/store/object";
 import {U} from "@/utils/functions";
 
 export class ReduxAction {
-    static set(newObjects: ActionObj[], classname: string): void {
-        const dict = store.getState().objects; const oldObjects: ActionObj[] = [];
+    static load(newObjects: DObject[], classname: string): void {
+        const dict = store.getState().objects; const oldObjects: DObject[] = [];
         for(let pointer in dict) {
             const obj = dict[pointer];
             if (obj.classname === classname) oldObjects.push(obj);
@@ -25,26 +25,26 @@ export class ReduxAction {
         }
     }
 
-    static add(obj: ActionObj): void {
+    static add(obj: DObject): void {
         store.dispatch(objectSlice.actions.add(obj));
-        const slice = ReduxAction.getSliceByObj(obj);
+        const slice = ReduxAction.getSlice(obj);
         if(slice) store.dispatch(slice.actions.add(obj.id));
         U.log('ADD', obj);
     }
 
-    static remove(obj: ActionObj): void {
+    static remove(obj: DObject): void {
         store.dispatch(objectSlice.actions.remove(obj));
-        const slice = ReduxAction.getSliceByObj(obj);
+        const slice = ReduxAction.getSlice(obj);
         if(slice) store.dispatch(slice.actions.remove(obj.id));
         U.log('REMOVE', obj);
     }
 
-    static edit(obj: ActionObj, field: keyof ActionObj, value: ActionValue): void {
+    static edit(obj: DObject, field: keyof DObject, value: Value): void {
         store.dispatch(objectSlice.actions.edit({obj, field, value}));
         U.log('EDIT', obj);
     }
 
-    static getSliceByObj(obj: ActionObj): null|Slice {
+    static getSlice(obj: DObject): null|Slice {
         switch(obj.classname) {
             case LLobby.name: return lobbySlice;
             case LUser.name: return userSlice;

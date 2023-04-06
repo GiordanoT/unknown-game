@@ -4,10 +4,14 @@ import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
 import {FirebaseAction} from "@/firebase/actions";
 import {DUser, LLobby, LUser} from "@/data";
+import {CONSTRAINT} from "@/utils/type";
 
 export function TestComponent(props: AllProps) {
     const test = async() => {
-        const x = await FirebaseAction.select<DUser>('users', ['name', 'email'], ['Test_1', 'test1@mail.it'])
+        const constraints: CONSTRAINT<DUser>[] = [];
+        constraints.push({field: 'name', operator: '==', value: 'Test_1'});
+        constraints.push({field: 'email', operator: '==', value: 'test1@mail.it'});
+        const x = await FirebaseAction.select<DUser>('users', constraints);
         console.log(x)
     }
 

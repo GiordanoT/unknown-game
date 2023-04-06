@@ -2,34 +2,42 @@ import {
     collection,
     CollectionReference,
     deleteDoc,
-    doc, DocumentData,
+    doc,
     getDocs,
     onSnapshot,
-    query, QueryFieldFilterConstraint,
+    query,
+    QueryFieldFilterConstraint,
     setDoc,
     updateDoc,
     where
 } from '@firebase/firestore';
 import {auth, db} from '@/firebase/index';
-import {ActionObj, ActionValue, Pointer} from "@/utils/type";
+import {DObject, Value, CONSTRAINT, Pointer} from "@/utils/type";
 import {ReduxAction} from "@/redux/actions";
 import {DPointer, DUser, LLobby, LUser} from "@/data";
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} from "@firebase/auth";
 import {MixinAction} from "@/utils/actions";
-import {isArray} from "util";
 
 export class FirebaseAction {
 
+    static async select<T extends DPointer>(collectionName: string, constraints?: CONSTRAINT<T>|CONSTRAINT<T>[]): Promise<T[]> {
+        const DOC = collection(db, collectionName);
+        if(constraints) {
+            const _constraints = (Array.isArray(constraints)) ? constraints : [constraints];
+            if(_constraints.length > 0) return await FirebaseAction._selectWithConditions(DOC, _constraints);
+            else return await FirebaseAction._selectWithoutConditions(DOC);
+        }
+        else return await FirebaseAction._selectWithoutConditions(DOC);
+    }
 
-    private static async _selectWithConditions<T>(DOC: CollectionReference, fields: (keyof T)[], values: ActionValue[]): Promise<T[]> {
-        if(fields.length !== values.length) return [];
-        const objects: T[] = []; const length = fields.length;
+    private static async _selectWithConditions<T extends DPointer>(DOC: CollectionReference, constraints: CONSTRAINT<T>[]): Promise<T[]> {
+        const objects: T[] = [];
         const conditions: QueryFieldFilterConstraint[] = [];
-        let index = 0;
-        while(index < length) {
-            const field = fields[index]; const value = values[index];
-            conditions.push(where(String(field), '==', value));
-            index += 1;
+        for(let constraint of constraints) {
+            const field = constraint.field;
+            const operator = constraint.operator;
+            const value = constraint.value;
+            conditions.push(where(String(field), operator, value));
         }
         const q = query(DOC, ...conditions);
         const qs = await getDocs(q);
@@ -37,44 +45,37 @@ export class FirebaseAction {
         return objects;
     }
 
-    private static async _selectWithoutConditions<T>(DOC: CollectionReference): Promise<T[]> {
+    private static async _selectWithoutConditions<T extends DPointer>(DOC: CollectionReference): Promise<T[]> {
         const objects: T[] = [];
         const q = query(DOC); const qs = await getDocs(q);
         qs.forEach((doc) => {objects.push({...doc.data()} as T)});
         return objects
     }
 
-    static async select<T extends DPointer>(collectionName: string, fields?: keyof T | (keyof T)[], values?: ActionValue|ActionValue[]): Promise<T[]> {
-        const DOC = collection(db, collectionName);
-        if(fields && values) {
-            const _fields = (Array.isArray(fields)) ? fields : [fields];
-            const _values = (Array.isArray(values)) ? values : [values];
-            return await FirebaseAction._selectWithConditions(DOC, _fields, _values);
-        }
-        else return await FirebaseAction._selectWithoutConditions(DOC);
+    static load(collectionName: string, className: string, id?: Pointer): void {
+        if(id) FirebaseAction._loadDocument(collectionName, id, className).then();
+        else FirebaseAction._loadCollection(collectionName, className).then();
     }
 
-    static loadDocument(collectionName: string, id: Pointer, className: string): void {FirebaseAction._loadDocument(collectionName, id, className).then();}
     private static async _loadDocument(collectionName: string, id: Pointer, className: string): Promise<void> {
         const DOC = doc(db, collectionName, id);
         onSnapshot(DOC, (result) => {
-            const objects = [{...result.data()} as ActionObj];
-            ReduxAction.set(objects, className);
+            const objects = [{...result.data()} as DObject];
+            ReduxAction.load(objects, className);
         });
     }
 
-    static loadCollection(collectionName: string, className: string): void {FirebaseAction._loadCollection(collectionName, className).then();}
     private static async _loadCollection(collectionName: string, className: string): Promise<void> {
         const DOC = collection(db, collectionName);
         onSnapshot(DOC, (result) => {
-            const objects: ActionObj[] = [];
-            for(let doc of result.docs) objects.push({...doc.data()} as ActionObj);
-            ReduxAction.set(objects, className);
+            const objects: DObject[] = [];
+            for(let doc of result.docs) objects.push({...doc.data()} as DObject);
+            ReduxAction.load(objects, className);
         });
     }
 
-    static add(obj: ActionObj): void {FirebaseAction._add(obj).then();}
-    private static async _add(obj: ActionObj): Promise<void> {
+    static add(obj: DObject): void {FirebaseAction._add(obj).then();}
+    private static async _add(obj: DObject): Promise<void> {
         const collection = FirebaseAction.getCollection(obj);
         if(collection) {
             const DOC = doc(db, collection, obj.id);
@@ -82,8 +83,8 @@ export class FirebaseAction {
         }
     }
 
-    static remove(obj: ActionObj): void {FirebaseAction._remove(obj).then();}
-    private static async _remove(obj: ActionObj): Promise<void> {
+    static remove(obj: DObject): void {FirebaseAction._remove(obj).then();}
+    private static async _remove(obj: DObject): Promise<void> {
         const collection = FirebaseAction.getCollection(obj);
         if(collection) {
             const DOC = doc(db, collection, obj.id);
@@ -91,26 +92,18 @@ export class FirebaseAction {
         }
     }
 
-    static edit(obj: ActionObj, field: string, value: ActionValue): void {FirebaseAction._edit(obj, field, value).then();}
-    private static async _edit(obj: ActionObj, field: string, value: ActionValue): Promise<void> {
+    static edit(obj: DObject, field: string, Value: Value): void {FirebaseAction._edit(obj, field, Value).then();}
+    private static async _edit(obj: DObject, field: string, Value: Value): Promise<void> {
         const collection = FirebaseAction.getCollection(obj);
         if(collection) {
             const DOC = doc(db, collection, obj.id);
-            await updateDoc(DOC, field, value);
-        }
-    }
-
-    static getCollection(obj: ActionObj): null|string {
-        switch(obj.classname) {
-            case LLobby.name: return 'lobbies';
-            case LUser.name: return 'users';
-            default: return null;
+            await updateDoc(DOC, field, Value);
         }
     }
 
     static async signin(email: string, password: string) {
         try {
-            const result = await createUserWithEmailAndPassword(auth, email, password);
+            await createUserWithEmailAndPassword(auth, email, password);
             const name = 'USER' + Date.now();
             const user = new LUser(name, email);
             MixinAction.add(user.raw());
@@ -120,8 +113,9 @@ export class FirebaseAction {
 
     static async login(email: string, password: string): Promise<boolean> {
         try {
-            const result = await signInWithEmailAndPassword(auth, email, password);
-            const users = await FirebaseAction.select<DUser>('users', 'email', email);
+            await signInWithEmailAndPassword(auth, email, password);
+            const constraint: CONSTRAINT<DUser> = {field: 'email', operator: '==', value: email};
+            const users = await FirebaseAction.select<DUser>('users', constraint);
             if(users.length > 0) ReduxAction.add(users[0]);
             return true;
         } catch (error) {return false;}
@@ -129,8 +123,16 @@ export class FirebaseAction {
 
     static logout(user: LUser): void { FirebaseAction._logout(user).then(); }
     private static async _logout(user: LUser): Promise<void> {
-        const result = await signOut(auth);
+        await signOut(auth);
         ReduxAction.remove(user.raw());
+    }
+
+    static getCollection(obj: DObject): null|string {
+        switch(obj.classname) {
+            case LLobby.name: return 'lobbies';
+            case LUser.name: return 'users';
+            default: return null;
+        }
     }
 
 }
