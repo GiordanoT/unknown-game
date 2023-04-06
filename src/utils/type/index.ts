@@ -7,3 +7,4 @@ export type Value = string|number|boolean;
 export interface EDIT {obj: DObject, field: keyof DObject, value: any}
 type OPERATOR = '=='|'!=';
 export interface CONSTRAINT<T> {field: keyof T, operator: OPERATOR, value: Value}
+

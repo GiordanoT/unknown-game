@@ -10,7 +10,7 @@ function ProfilePage(props: AllProps) {
 
     const editName = (evt: React.ChangeEvent<HTMLInputElement>) => {
         const newName = evt.target.value;
-        if(newName) user?.setName(newName);
+        if(newName && user) user.name = newName;
     }
 
     return (<div>

@@ -11,12 +11,12 @@ export function LobbyComponent(props: AllProps) {
     const lobby = props.lobby;
 
     const remove = (lobby: LLobby) => {
-        FirebaseAction.remove(lobby.raw());
+        FirebaseAction.remove(lobby.raw);
     }
 
     return(<div>
         <button onClick={async(evt) => {await remove(lobby)}}>remove</button>
-        <input value={lobby.name} onChange={(evt) => {lobby.setName(evt.target.value)}} />
+        <input value={lobby.name} onChange={(evt) => {lobby.name = evt.target.value}} />
         <label>{lobby.name}</label>
     </div>);
 }

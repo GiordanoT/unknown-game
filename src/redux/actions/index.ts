@@ -2,9 +2,9 @@ import {store} from "@/redux";
 import {DObject, Value} from "@/utils/type";
 import {objectSlice} from "@/redux/store/object";
 import {U} from "@/utils/functions";
-import {ReduxRootAction} from "@/redux/actions/root";
+import {ReduxPointerAction} from "@/redux/actions/pointer";
 
-export class ReduxObjAction {
+export class ReduxAction {
     static load(newObjects: DObject[], classname: string): void {
         const dict = store.getState().objects; const oldObjects: DObject[] = [];
         for(let pointer in dict) {
@@ -13,11 +13,11 @@ export class ReduxObjAction {
         }
         for(let oldObject of oldObjects) {
             const newObject = newObjects.find((obj) => {return obj.id === oldObject.id});
-            if(!newObject) ReduxObjAction.remove(oldObject);
+            if(!newObject) ReduxAction.remove(oldObject);
         }
         for(let newObject of newObjects) {
             const oldObject = oldObjects.find((obj) => {return obj.id === newObject.id});
-            if(!oldObject) ReduxObjAction.add(newObject);
+            if(!oldObject) ReduxAction.add(newObject);
             else U.delta(oldObject, newObject);
         }
     }
@@ -26,12 +26,12 @@ export class ReduxObjAction {
         store.dispatch(objectSlice.actions.add(obj));
         U.log('ADD OBJ', obj);
         const slice = U.getSlice(obj);
-        if(slice) ReduxRootAction.add(slice, obj.id);
+        if(slice) ReduxPointerAction.add(slice, obj);
     }
 
     static remove(obj: DObject): void {
         const slice = U.getSlice(obj);
-        if(slice) ReduxRootAction.remove(slice, obj.id);
+        if(slice) ReduxPointerAction.remove(slice, obj);
         store.dispatch(objectSlice.actions.remove(obj));
         U.log('REMOVE OBJ', obj);
     }

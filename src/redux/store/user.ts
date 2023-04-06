@@ -1,13 +1,15 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {Pointer} from "@/utils/type";
+import {DUser} from "@/data";
 
-type T = {pointer: string};
+type T = {pointer: Pointer<DUser>};
 const initialState: T = {pointer: ''};
 export const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-        add(state: T, action: PayloadAction<string>){state.pointer = action.payload},
-        remove(state: T, action: PayloadAction<string>) {state.pointer = ''}
+        add(state: T, action: PayloadAction<Pointer<DUser>>){state.pointer = action.payload},
+        remove(state: T, action: PayloadAction<Pointer<DUser>>) {state.pointer = ''}
     }
 });
 

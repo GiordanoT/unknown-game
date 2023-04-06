@@ -16,7 +16,7 @@ import {CONSTRAINT, DObject, Pointer, Value} from "@/utils/type";
 import {DPointer, DUser, LUser} from "@/data";
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} from "@firebase/auth";
 import {MixinAction} from "@/utils/actions";
-import {ReduxObjAction} from "@/redux/actions/object";
+import {ReduxAction} from "@/redux/actions";
 import {U} from "@/utils/functions";
 
 export class FirebaseAction {
@@ -62,7 +62,7 @@ export class FirebaseAction {
         const DOC = doc(db, collectionName, id);
         onSnapshot(DOC, (result) => {
             const objects = [{...result.data()} as DObject];
-            ReduxObjAction.load(objects, className);
+            ReduxAction.load(objects, className);
         });
     }
 
@@ -71,7 +71,7 @@ export class FirebaseAction {
         onSnapshot(DOC, (result) => {
             const objects: DObject[] = [];
             for(let doc of result.docs) objects.push({...doc.data()} as DObject);
-            ReduxObjAction.load(objects, className);
+            ReduxAction.load(objects, className);
         });
     }
 
@@ -102,12 +102,12 @@ export class FirebaseAction {
         }
     }
 
-    static async signin(email: string, password: string) {
+    static async signin(email: string, password: string): Promise<boolean> {
         try {
             await createUserWithEmailAndPassword(auth, email, password);
             const name = 'USER' + Date.now();
-            const user = new LUser(name, email);
-            MixinAction.add(user.raw());
+            const user = LUser.new(name, email);
+            MixinAction.add(user.raw);
             return true;
         } catch (error) {return false;}
     }
@@ -117,7 +117,7 @@ export class FirebaseAction {
             await signInWithEmailAndPassword(auth, email, password);
             const constraint: CONSTRAINT<DUser> = {field: 'email', operator: '==', value: email};
             const users = await FirebaseAction.select<DUser>('users', constraint);
-            if(users.length > 0) ReduxObjAction.add(users[0]);
+            if(users.length > 0) ReduxAction.add(users[0]);
             return true;
         } catch (error) {return false;}
     }
@@ -125,7 +125,7 @@ export class FirebaseAction {
     static logout(user: LUser): void { FirebaseAction._logout(user).then(); }
     private static async _logout(user: LUser): Promise<void> {
         await signOut(auth);
-        ReduxObjAction.remove(user.raw());
+        ReduxAction.remove(user.raw);
     }
 
 }

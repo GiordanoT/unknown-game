@@ -2,17 +2,13 @@ import React from 'react';
 import {RootState} from '@/redux';
 import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
-import {FirebaseAction} from "@/firebase/actions";
-import {DUser, LLobby, LUser} from "@/data";
-import {CONSTRAINT} from "@/utils/type";
+import {LLobby, LPointer, LUser} from "@/data";
 
 export function TestComponent(props: AllProps) {
     const test = async() => {
-        const constraints: CONSTRAINT<DUser>[] = [];
-        constraints.push({field: 'name', operator: '==', value: 'Test_1'});
-        constraints.push({field: 'email', operator: '==', value: 'test1@mail.it'});
-        const x = await FirebaseAction.select<DUser>('users', constraints);
-        console.log(x)
+        const obj = LPointer.new();
+        obj.id = '100'
+        console.log(obj.id);
     }
 
     return(<div>

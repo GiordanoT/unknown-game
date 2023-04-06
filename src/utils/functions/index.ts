@@ -1,5 +1,5 @@
 import {Dictionary, DObject, Value} from "@/utils/type";
-import {ReduxObjAction} from "@/redux/actions/object";
+import {ReduxAction} from "@/redux/actions";
 import {Slice} from "@reduxjs/toolkit";
 import {LLobby, LUser} from "@/data";
 import {lobbySlice} from "@/redux/store/lobby";
@@ -26,7 +26,7 @@ export class U {
 
     public static actionSwitch(obj: DObject, field: keyof DObject, value: Value, layer: number): void {
         switch(layer) {
-            case 0: ReduxObjAction.edit(obj, field, value); break;
+            case 0: ReduxAction.edit(obj, field, value); break;
             case 1: FirebaseAction.edit(obj, field, value); break;
             default: MixinAction.edit(obj, field, value); break;
         }
@@ -54,6 +54,6 @@ export class U {
         const changes: Dictionary<any> = Object.entries(newObject).filter(([key, val]) => {
             return oldObject[key as keyof DObject] !== val && key in oldObject
         }).reduce((a, [key, v]) => ({...a, [key]: v}), {});
-        for(let field in changes) ReduxObjAction.edit(oldObject, field as keyof DObject, changes[field]);
+        for(let field in changes) ReduxAction.edit(oldObject, field as keyof DObject, changes[field]);
     }
 }

@@ -1,7 +1,7 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {ActionObj, Dictionary, EDIT, Pointer} from "@/utils/type";
+import {DObject, Dictionary, EDIT, Pointer} from "@/utils/type";
 
-type T = ActionObj;
+type T = DObject;
 const initialState: { [id: Pointer]: T} = {};
 export const objectSlice = createSlice({
     name: 'object',
