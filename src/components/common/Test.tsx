@@ -2,17 +2,11 @@ import React from 'react';
 import {RootState} from '@/redux';
 import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
-import {DGame, LGame} from "@/data/Game";
+
 
 export function TestComponent(props: AllProps) {
-    const test = async() => {
-        const dGame: DGame = {id: '1', owner: 'ID1', guest: null};
-        const obj = LGame.new(dGame);
-        console.log(obj.raw);
-    }
 
     return(<div>
-        <button onClick={test}>click</button>
     </div>);
 
 
