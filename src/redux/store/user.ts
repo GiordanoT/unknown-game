@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {Pointer} from "@/utils/type";
-import {DUser} from "@/data";
+import {DUser} from "@/data/User";
 
 type T = {pointer: Pointer<DUser>};
 const initialState: T = {pointer: ''};

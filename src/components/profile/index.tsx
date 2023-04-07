@@ -3,7 +3,7 @@ import {RootState} from "@/redux";
 import {Dispatch} from "redux";
 import {connect} from "react-redux";
 import Navbar from "@/components/common/Navbar";
-import {LUser} from "@/data";
+import {LUser} from "@/data/User";
 
 function ProfilePage(props: AllProps) {
     const user = props.user;

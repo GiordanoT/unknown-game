@@ -1,6 +1,6 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {Pointer} from "@/utils/type";
-import {DLobby} from "@/data";
+import {DLobby} from "@/data/Lobby";
 
 type T = {pointers: Pointer<DLobby>[]};
 const initialState: T = {pointers: []};

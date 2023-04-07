@@ -13,11 +13,12 @@ import {
 } from '@firebase/firestore';
 import {auth, db} from '@/firebase/index';
 import {CONSTRAINT, DObject, Pointer, Value} from "@/utils/type";
-import {DPointer, DUser, LUser} from "@/data";
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut} from "@firebase/auth";
 import {MixinAction} from "@/utils/actions";
 import {ReduxAction} from "@/redux/actions";
 import {U} from "@/utils/functions";
+import {DPointer} from "@/data/Pointer";
+import {DUser, LUser} from "@/data/User";
 
 export class FirebaseAction {
 
@@ -79,7 +80,7 @@ export class FirebaseAction {
     private static async _add(obj: DObject): Promise<void> {
         const collection = U.getCollection(obj);
         if(collection) {
-            const DOC = doc(db, collection, obj.id);
+            const DOC = doc(db, collection, String(obj.id));
             await setDoc(DOC, obj,{merge: false});
         }
     }
@@ -88,7 +89,7 @@ export class FirebaseAction {
     private static async _remove(obj: DObject): Promise<void> {
         const collection = U.getCollection(obj);
         if(collection) {
-            const DOC = doc(db, collection, obj.id);
+            const DOC = doc(db, collection, String(obj.id));
             await deleteDoc(DOC);
         }
     }
@@ -97,7 +98,7 @@ export class FirebaseAction {
     private static async _edit(obj: DObject, field: string, Value: Value): Promise<void> {
         const collection = U.getCollection(obj);
         if(collection) {
-            const DOC = doc(db, collection, obj.id);
+            const DOC = doc(db, collection, String(obj.id));
             await updateDoc(DOC, field, Value);
         }
     }
@@ -106,7 +107,8 @@ export class FirebaseAction {
         try {
             await createUserWithEmailAndPassword(auth, email, password);
             const name = 'USER' + Date.now();
-            const user = LUser.new(name, email);
+            const dUser: DUser = {name, email};
+            const user = LUser.new(dUser);
             MixinAction.add(user.raw);
             return true;
         } catch (error) {return false;}

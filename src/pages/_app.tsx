@@ -5,7 +5,7 @@ import {store} from '@/redux';
 import {onAuthStateChanged} from "@firebase/auth";
 import {auth} from "@/firebase";
 import {FirebaseAction} from "@/firebase/actions";
-import {DUser} from "@/data";
+import {DUser} from "@/data/User";
 import {CONSTRAINT} from "@/utils/type";
 import {ReduxAction} from "@/redux/actions";
 

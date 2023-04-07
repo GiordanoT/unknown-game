@@ -2,13 +2,13 @@ import React from 'react';
 import {RootState} from '@/redux';
 import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
-import {LLobby, LPointer, LUser} from "@/data";
+import {DGame, LGame} from "@/data/Game";
 
 export function TestComponent(props: AllProps) {
     const test = async() => {
-        const obj = LPointer.new();
-        obj.id = '100'
-        console.log(obj.id);
+        const dGame: DGame = {id: '1', owner: 'ID1', guest: null};
+        const obj = LGame.new(dGame);
+        console.log(obj.raw);
     }
 
     return(<div>
@@ -19,14 +19,12 @@ export function TestComponent(props: AllProps) {
 }
 
 interface OwnProps {}
-interface StateProps {lobby: null|LLobby}
+interface StateProps {}
 interface DispatchProps {}
 type AllProps = OwnProps & StateProps & DispatchProps;
 
 function mapStateToProps(state: RootState, ownProps: OwnProps): StateProps {
-    const pointer = state.lobbies.pointers[0]; let lobby: null|LLobby = null;
-    if(pointer) lobby = LUser.fromPointer(pointer);
-    return {lobby}
+    return {}
 }
 
 function mapDispatchToProps(dispatch: Dispatch<any>): DispatchProps {

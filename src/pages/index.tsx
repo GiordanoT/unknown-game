@@ -1,7 +1,5 @@
 import Head from 'next/head';
 import React, {useState} from "react";
-import {Dictionary} from "@/utils/type";
-import {DUser} from "@/data";
 import {useSelector} from "react-redux";
 import {RootState} from "@/redux";
 import {useEffectOnce} from "usehooks-ts";

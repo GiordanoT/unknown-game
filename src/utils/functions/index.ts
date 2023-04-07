@@ -1,11 +1,12 @@
 import {Dictionary, DObject, Value} from "@/utils/type";
 import {ReduxAction} from "@/redux/actions";
 import {Slice} from "@reduxjs/toolkit";
-import {LLobby, LUser} from "@/data";
 import {lobbySlice} from "@/redux/store/lobby";
 import {userSlice} from "@/redux/store/user";
 import {FirebaseAction} from "@/firebase/actions";
 import {MixinAction} from "@/utils/actions";
+import {LLobby} from "@/data/Lobby";
+import {LUser} from "@/data/User";
 
 export class U {
     public static getSlice(obj: DObject): null|Slice {

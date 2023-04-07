@@ -1,4 +1,4 @@
-import {LPointer} from "@/data";
+import {LPointer} from "@/data/Pointer";
 import {Value} from "@/utils/type";
 
 export class ProxyWrapper {

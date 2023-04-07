@@ -2,7 +2,7 @@ import React from "react";
 import {RootState} from "@/redux";
 import {Dispatch} from "redux";
 import {connect} from "react-redux";
-import {LLobby} from "@/data";
+import {DLobby, LLobby} from "@/data/Lobby";
 import Navbar from "@/components/common/Navbar";
 import Lobby from "@/components/lobbies/Lobby";
 import {MixinAction} from "@/utils/actions";
@@ -11,7 +11,8 @@ function LobbiesPage(props: AllProps) {
     const lobbies = props.lobbies;
 
     const add = async(evt: React.MouseEvent<HTMLButtonElement>) => {
-        const lobby = LLobby.new('Lobby');
+        const dLobby: DLobby = {name: 'Lobby'};
+        const lobby = LLobby.new(dLobby);
         MixinAction.add(lobby.raw);
     }
 

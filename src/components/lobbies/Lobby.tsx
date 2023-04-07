@@ -3,7 +3,7 @@ import {RootState} from '@/redux';
 import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
 import {FirebaseAction} from "@/firebase/actions";
-import {DLobby, LLobby} from "@/data";
+import {DLobby, LLobby} from "@/data/Lobby";
 import {Pointer} from "@/utils/type";
 
 

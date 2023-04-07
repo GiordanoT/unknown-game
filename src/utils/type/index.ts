@@ -1,4 +1,6 @@
-import {DLobby, DPointer, DUser} from "@/data";
+import {DPointer} from "@/data/Pointer";
+import {DLobby} from "@/data/Lobby";
+import {DUser} from "@/data/User";
 
 export type Pointer<T extends DPointer = DPointer> = string;
 export type Dictionary<T> = { [key: string] : T };

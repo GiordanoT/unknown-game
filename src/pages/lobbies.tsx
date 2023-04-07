@@ -1,12 +1,10 @@
 import Head from 'next/head';
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import Lobbies from "@/components/lobbies";
 import {FirebaseAction} from "@/firebase/actions";
-import {lobbySlice} from "@/redux/store/lobby";
 import {RootState} from "@/redux";
 import {useSelector} from "react-redux";
-import {Dictionary} from "@/utils/type";
-import {DUser, LLobby} from "@/data";
+import {LLobby} from "@/data/Lobby";
 import Auth from "@/components/auth";
 import {useEffectOnce} from "usehooks-ts";
 import Loading from "@/components/common/Loading";

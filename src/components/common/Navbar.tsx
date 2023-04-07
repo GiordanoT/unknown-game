@@ -4,7 +4,7 @@ import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
 import {FirebaseAction} from "@/firebase/actions";
 import {useRouter} from "next/router";
-import {LUser} from "@/data";
+import {LUser} from "@/data/User";
 
 export function NavbarComponent(props: AllProps) {
     const user = props.user;
