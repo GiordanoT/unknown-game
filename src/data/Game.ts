@@ -8,6 +8,7 @@ import {DNamed} from "@/data/Named";
 
 ///<reference path='Pointer.ts' />
 export interface DGame extends DPointer {
+    code: string,
     playerOne: Pointer<DUser>,
     playerTwo: null|Pointer<DUser>,
     running: boolean
@@ -15,6 +16,7 @@ export interface DGame extends DPointer {
 
 export class LGame extends LPointer implements DGame {
     classname = LGame.name;
+    code: string;
     playerOne: Pointer<DUser>;
     playerTwo: null|Pointer<DUser>;
     running: boolean;
@@ -23,6 +25,7 @@ export class LGame extends LPointer implements DGame {
     protected constructor(game: DGame) {
         const pointer: DPointer = {id: game.id}
         super(pointer);
+        this.code = game.code;
         this.playerOne = game.playerOne;
         this.playerTwo = game.playerTwo;
         this.running = game.running;
@@ -54,5 +57,11 @@ export class LGame extends LPointer implements DGame {
     setRunning(running: this['running']): void {
         this.running = running;
         Action.EDIT<DGame>(this.getRaw(), 'running', running, Action.Mixin);
+    }
+
+    getCode(): this['code'] {return this.code;}
+    setCode(code: this['code']): void {
+        this.code = code;
+        Action.EDIT<DGame>(this.getRaw(), 'code', code, Action.Mixin);
     }
 }

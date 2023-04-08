@@ -28,7 +28,7 @@ export class U {
     }
 
     public static getRandomString(length: number): string {
-        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         let randomString = '';
         let index = 0;
         while(index < length) {
