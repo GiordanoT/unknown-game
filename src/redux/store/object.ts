@@ -1,8 +1,8 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {DObject, Dictionary, EDIT, Pointer} from "@/utils/type";
+import {Dictionary, DObject, EDIT, Pointer} from "@/utils/type";
 
-type T = DObject;
-const initialState: { [id: Pointer]: T} = {};
+type T = DObject
+const initialState: { [id: Pointer<T>]: T} = {};
 export const objectSlice = createSlice({
     name: 'object',
     initialState,
@@ -19,7 +19,7 @@ export const objectSlice = createSlice({
             const payload = action.payload;
             const obj = payload.obj;
             const field = payload.field;
-            state[String(obj.id)][field] = payload.value;
+            state[String(obj.id)][field as keyof T] = payload.value;
         }
     }
 });

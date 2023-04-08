@@ -3,6 +3,7 @@ import {DObject, Value} from "@/utils/type";
 import {objectSlice} from "@/redux/store/object";
 import {U} from "@/utils/functions";
 import {ReduxPointerAction} from "@/redux/actions/pointer";
+import {DPointer} from "@/data/Pointer";
 
 export class ReduxAction {
     static load(newObjects: DObject[], classname: string): void {
@@ -36,8 +37,8 @@ export class ReduxAction {
         U.log('REMOVE OBJ', obj);
     }
 
-    static edit(obj: DObject, field: keyof DObject, value: Value): void {
-        store.dispatch(objectSlice.actions.edit({obj, field, value}));
+    static edit<T extends DPointer>(obj: T, field: keyof T, value: Value): void {
+        store.dispatch(objectSlice.actions.edit({obj, field: String(field), value}));
         U.log('EDIT OBJ', obj);
     }
 }

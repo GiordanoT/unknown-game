@@ -11,9 +11,9 @@ function LobbiesPage(props: AllProps) {
     const lobbies = props.lobbies;
 
     const add = async(evt: React.MouseEvent<HTMLButtonElement>) => {
-        const dLobby: DLobby = {name: 'Lobby'};
-        const lobby = LLobby.new(dLobby);
-        MixinAction.add(lobby.raw);
+        //const dLobby: DLobby = {name: 'Lobby'};
+        //const lobby = LLobby.new(dLobby);
+        //MixinAction.add(lobby.raw);
     }
 
     return (<div>

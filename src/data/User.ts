@@ -26,8 +26,7 @@ export class LUser extends LNamed implements DUser {
         const object = objects[pointer] as DUser;
         return LUser.new(object);
     }
-
     setName(name: this['name']): void {super.setName(name, Action.Mixin);}
     getEmail(): this['email'] { return this.email; }
-
+    setEmail(): void {}
 }

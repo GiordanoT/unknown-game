@@ -9,14 +9,14 @@ import Loading from "@/components/common/Loading";
 
 export default function HomePage() {
     const [isLoading, setLoading] = useState(true);
-    const authGuard = useSelector((state: RootState) => state.user).pointer !== '';
+    const userID = useSelector((state: RootState) => state.user).pointer;
 
     useEffectOnce(() => {
         new Promise(resolve => setTimeout(resolve, 1000)).then(() => setLoading(false));
     });
 
     return (<>
-        <Head><title>{(authGuard) ? 'Home' : 'Auth'}</title></Head>
-        {(isLoading) ? <Loading /> : (authGuard) ? <Home /> : <Auth />}
+        <Head><title>{(userID) ? 'Home' : 'Auth'}</title></Head>
+        {(isLoading) ? <Loading /> : (userID) ? <Home userID={userID} /> : <Auth />}
     </>);
 }

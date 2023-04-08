@@ -94,12 +94,12 @@ export class FirebaseAction {
         }
     }
 
-    static edit(obj: DObject, field: string, Value: Value): void {FirebaseAction._edit(obj, field, Value).then();}
-    private static async _edit(obj: DObject, field: string, Value: Value): Promise<void> {
+    static edit<T extends DPointer>(obj: T, field: keyof T, Value: Value): void {FirebaseAction._edit<T>(obj, field, Value).then();}
+    private static async _edit<T extends DPointer>(obj: T, field: keyof T, Value: Value): Promise<void> {
         const collection = U.getCollection(obj);
         if(collection) {
             const DOC = doc(db, collection, String(obj.id));
-            await updateDoc(DOC, field, Value);
+            await updateDoc(DOC, String(field), Value);
         }
     }
 

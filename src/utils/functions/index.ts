@@ -1,18 +1,19 @@
-import {Dictionary, DObject, Value} from "@/utils/type";
+import {Dictionary, DObject} from "@/utils/type";
 import {ReduxAction} from "@/redux/actions";
 import {Slice} from "@reduxjs/toolkit";
 import {lobbySlice} from "@/redux/store/lobby";
 import {userSlice} from "@/redux/store/user";
-import {FirebaseAction} from "@/firebase/actions";
-import {MixinAction} from "@/utils/actions";
 import {LLobby} from "@/data/Lobby";
 import {LUser} from "@/data/User";
+import {LGame} from "@/data/Game";
+import {gameSlice} from "@/redux/store/game";
 
 export class U {
     public static getSlice(obj: DObject): null|Slice {
         switch(obj.classname) {
             case LLobby.name: return lobbySlice;
             case LUser.name: return userSlice;
+            case LGame.name: return gameSlice;
             default: return null;
         }
     }
@@ -21,15 +22,8 @@ export class U {
         switch(obj.classname) {
             case LLobby.name: return 'lobbies';
             case LUser.name: return 'users';
+            case LGame.name: return 'games';
             default: return null;
-        }
-    }
-
-    public static actionSwitch(obj: DObject, field: keyof DObject, value: Value, layer: number): void {
-        switch(layer) {
-            case 0: ReduxAction.edit(obj, field, value); break;
-            case 1: FirebaseAction.edit(obj, field, value); break;
-            default: MixinAction.edit(obj, field, value); break;
         }
     }
 

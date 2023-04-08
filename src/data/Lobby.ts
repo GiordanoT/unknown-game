@@ -1,19 +1,17 @@
 import {Pointer} from "@/utils/type";
 import {ProxyWrapper} from "@/utils/proxy";
 import {store} from "@/redux";
-import {Action} from "@/utils/actions";
-import {DNamed, LNamed} from "@/data/Named";
-import {DPointer} from "@/data/Pointer";
+import {DPointer, LPointer} from "@/data/Pointer";
 
-///<reference path='Named.ts' />
-export interface DLobby extends DNamed {}
-export class LLobby extends LNamed implements DLobby {
+///<reference path='Pointer.ts' />
+export interface DLobby extends DPointer {}
+export class LLobby extends LPointer implements DLobby {
     classname = LLobby.name;
     raw!: DLobby;
 
     protected constructor(lobby: DLobby) {
-        const named: DNamed = {id: lobby.id, name: lobby.name}
-        super(named);
+        const pointer: DPointer = {id: lobby.id}
+        super(pointer);
     }
     static new(lobby: DLobby): LLobby {
         const obj = new LLobby(lobby);
@@ -26,6 +24,5 @@ export class LLobby extends LNamed implements DLobby {
         return LLobby.new(object);
     }
 
-    setName(name: this['name']): void {super.setName(name, Action.Mixin)}
 }
 
