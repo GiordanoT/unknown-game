@@ -8,20 +8,21 @@ import {LLobby} from "@/data/Lobby";
 import Auth from "@/components/auth";
 import {useEffectOnce} from "usehooks-ts";
 import Loading from "@/components/common/Loading";
+import {U} from "@/utils/functions";
 
 export default function LobbiesPage() {
     const [isLoading, setLoading] = useState(true);
-    const authGuard = useSelector((state: RootState) => state.user).pointer !== '';
+    const userID = useSelector((state: RootState) => state.user).pointer;
 
 
     useEffectOnce(() => {
-        new Promise(resolve => setTimeout(resolve, 1000)).then(() => setLoading(false));
+        U.sleep(1).then(() => setLoading(false));
         FirebaseAction.load('lobbies', LLobby.name);
     });
 
     return (<>
-        <Head><title>{(authGuard) ? 'Lobbies' : 'Auth'}</title></Head>
-        {(isLoading) ? <Loading /> : (authGuard) ? <Lobbies /> : <Auth />}
+        <Head><title>{(userID) ? 'Lobbies' : 'Auth'}</title></Head>
+        {(isLoading) ? <Loading /> : (userID) ? <Lobbies userID={userID} /> : <Auth />}
     </>);
 }
 

@@ -3,9 +3,9 @@ import {RootState} from '@/redux';
 import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
 import Navbar from "@/components/common/Navbar";
-import {DUser, LUser} from "@/data/User";
+import {DUser, LUser, PUser} from "@/data/User";
 import {CONSTRAINT, Pointer} from "@/utils/type";
-import {DGame, LGame} from "@/data/Game";
+import {DGame, LGame, PGame} from "@/data/Game";
 import {Action} from "@/utils/actions";
 import {FirebaseAction} from "@/firebase/actions";
 import {U} from "@/utils/functions";
@@ -20,14 +20,15 @@ function HomeComponent(props: AllProps) {
         if(game) {
             FirebaseAction.load('games', LGame.name, game.id);
             if(game.running) setGameCode('');
+            else setGameCode(game.code);
         }
     }, [game])
 
     const create = () => {
         const dGame: DGame = {code: U.getRandomString(5), playerOne: user.id, playerTwo: null, running: false};
-        const lGame = LGame.new(dGame);
-        Action.ADD(lGame.raw, Action.Mixin);
-        setGameCode(lGame.code);
+        const pGame = LGame.new(dGame);
+        Action.ADD(pGame.raw, Action.Mixin);
+        setGameCode(pGame.code);
     }
     const join = async() => {
         const constraint: CONSTRAINT<DGame> = {field: 'code', operator: '==', value: gameCode};
@@ -35,9 +36,9 @@ function HomeComponent(props: AllProps) {
         if(games.length > 0) {
             const dGame = games[0];
             if(!dGame.running) {
-                const lGame = LGame.new(dGame);
-                Action.ADD(lGame.raw, Action.Redux);
-                lGame.running = true; lGame.playerTwo = user.id;
+                const pGame = LGame.new(dGame);
+                Action.ADD(pGame.raw, Action.Redux);
+                pGame.running = true; pGame.playerTwo = user;
             } else alert('game is running');
         } else alert('invalid gameID');
     }
@@ -46,7 +47,7 @@ function HomeComponent(props: AllProps) {
         return(<Game game={game} />);
     } else {
         return(<div>
-            <Navbar />
+            <Navbar userID={user.id} />
             <div className={'card shadow mt-4 mx-auto'}>
                 <label className={'d-block'}><b>GAME</b></label>
                 <hr />
@@ -63,13 +64,13 @@ function HomeComponent(props: AllProps) {
 }
 
 interface OwnProps {userID: Pointer<DUser>}
-interface StateProps {user: LUser, game: null|LGame}
+interface StateProps {user: PUser, game: null|PGame}
 interface DispatchProps {}
 type AllProps = OwnProps & StateProps & DispatchProps;
 
 function mapStateToProps(state: RootState, ownProps: OwnProps): StateProps {
     const user = LUser.fromPointer(ownProps.userID);
-    const gameID = state.game.pointer; let game: null|LGame = null;
+    const gameID = state.game.pointer; let game: null|PGame = null;
     if(gameID) game = LGame.fromPointer(gameID);
     return {user, game};
 }

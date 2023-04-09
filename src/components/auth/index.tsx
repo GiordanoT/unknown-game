@@ -3,18 +3,25 @@ import {RootState} from '@/redux';
 import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
 import {FirebaseAction} from "@/firebase/actions";
+import {useRouter} from "next/router";
 
 function AuthComponent(props: AllProps) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState(false);
+    const router = useRouter();
 
     const signin = (evt: React.MouseEvent<HTMLButtonElement>) => {
         FirebaseAction.signin(email, password).then((result) => {setError(!result)});
     }
     const login = (evt: React.MouseEvent<HTMLButtonElement>) => {
-        FirebaseAction.login(email, password).then((result) => {setError(!result)});
+        FirebaseAction.login(email, password).then((result) => {
+            setError(!result);
+            if(result) goto('');
+        });
     }
+    const goto = (link: string) => {router.push('/' + link).then()}
+
 
     return(<div className={'mx-auto card shadow mt-4'}>
         <label className={'d-block'}><b>AUTH</b></label>

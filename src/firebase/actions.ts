@@ -4,7 +4,7 @@ import {
     deleteDoc,
     doc,
     getDocs,
-    onSnapshot,
+    onSnapshot, or, Query,
     query,
     QueryFieldFilterConstraint,
     setDoc,
@@ -22,17 +22,17 @@ import {DUser, LUser} from "@/data/User";
 
 export class FirebaseAction {
 
-    static async select<T extends DPointer>(collectionName: string, constraints?: CONSTRAINT<T>|CONSTRAINT<T>[]): Promise<T[]> {
+    static async select<T extends DPointer>(collectionName: string, constraints?: CONSTRAINT<T>|CONSTRAINT<T>[], isAND: boolean = true): Promise<T[]> {
         const DOC = collection(db, collectionName);
         if(constraints) {
             const _constraints = (Array.isArray(constraints)) ? constraints : [constraints];
-            if(_constraints.length > 0) return await FirebaseAction._selectWithConditions(DOC, _constraints);
+            if(_constraints.length > 0) return await FirebaseAction._selectWithConditions(DOC, _constraints, isAND);
             else return await FirebaseAction._selectWithoutConditions(DOC);
         }
         else return await FirebaseAction._selectWithoutConditions(DOC);
     }
 
-    private static async _selectWithConditions<T extends DPointer>(DOC: CollectionReference, constraints: CONSTRAINT<T>[]): Promise<T[]> {
+    private static async _selectWithConditions<T extends DPointer>(DOC: CollectionReference, constraints: CONSTRAINT<T>[], isAND: boolean): Promise<T[]> {
         const objects: T[] = [];
         const conditions: QueryFieldFilterConstraint[] = [];
         for(let constraint of constraints) {
@@ -41,7 +41,9 @@ export class FirebaseAction {
             const value = constraint.value;
             conditions.push(where(String(field), operator, value));
         }
-        const q = query(DOC, ...conditions);
+        let q: Query;
+        if(isAND) q = query(DOC, ...conditions);
+        else q = query(DOC, or(...conditions));
         const qs = await getDocs(q);
         qs.forEach((doc) => {objects.push({...doc.data()} as T)});
         return objects;
@@ -124,10 +126,10 @@ export class FirebaseAction {
         } catch (error) {return false;}
     }
 
-    static logout(user: LUser): void { FirebaseAction._logout(user).then(); }
-    private static async _logout(user: LUser): Promise<void> {
+    static async logout(): Promise<void> {
         await signOut(auth);
-        ReduxAction.remove(user.raw);
+        // ReduxAction.remove(user.raw);
+        ReduxAction.reset();
     }
 
 }

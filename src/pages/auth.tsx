@@ -6,18 +6,19 @@ import {RootState} from "@/redux";
 import Home from "@/pages/index";
 import {useEffectOnce} from "usehooks-ts";
 import Loading from "@/components/common/Loading";
+import {U} from "@/utils/functions";
 
 export default function AuthPage() {
     const [isLoading, setLoading] = useState(true);
-    const authGuard = useSelector((state: RootState) => state.user).pointer !== '';
+    const userID = useSelector((state: RootState) => state.user).pointer !== '';
 
     useEffectOnce(() => {
-        new Promise(resolve => setTimeout(resolve, 1000)).then(() => setLoading(false));
+        U.sleep(1).then(() => setLoading(false));
     })
 
     return(<>
-        <Head><title>{(!authGuard) ? 'Auth' : 'Home'}</title></Head>
-        {(isLoading) ? <Loading /> : (authGuard)? <Home /> : <Auth />}
+        <Head><title>{(!userID) ? 'Auth' : 'Home'}</title></Head>
+        {(isLoading) ? <Loading /> : (userID)? <Loading /> : <Auth />}
     </>);
 
 }

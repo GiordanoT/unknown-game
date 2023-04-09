@@ -6,18 +6,19 @@ import {useEffectOnce} from "usehooks-ts";
 import Auth from "@/components/auth";
 import Profile from "@/components/profile";
 import Loading from "@/components/common/Loading";
+import {U} from "@/utils/functions";
 
 export default function HomePage() {
     const [isLoading, setLoading] = useState(true);
-    const authGuard = useSelector((state: RootState) => state.user).pointer !== '';
+    const userID = useSelector((state: RootState) => state.user).pointer;
 
 
     useEffectOnce(() => {
-        new Promise(resolve => setTimeout(resolve, 1000)).then(() => setLoading(false));
+        U.sleep(1).then(() => setLoading(false));
     });
 
     return (<>
-        <Head><title>{(authGuard) ? 'Profile' : 'Auth'}</title></Head>
-        {(isLoading) ? <Loading /> : (authGuard) ? <Profile /> : <Auth />}
+        <Head><title>{(userID) ? 'Profile' : 'Auth'}</title></Head>
+        {(isLoading) ? <Loading /> : (userID) ? <Profile userID={userID} /> : <Auth />}
     </>);
 }

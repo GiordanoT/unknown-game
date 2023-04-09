@@ -1,5 +1,5 @@
-import {LPointer} from "@/data/Pointer";
-import {Value} from "@/utils/type";
+import {LPointer, PPointer} from "@/data/Pointer";
+import {LObject, Value} from "@/utils/type";
 
 export class ProxyWrapper {
     public static handler<T extends LPointer>() {
@@ -28,5 +28,8 @@ export class ProxyWrapper {
                 return false;
             }
         }
+    }
+    public static wrap<T extends PPointer>(obj: LObject) {
+        return obj as any as T;
     }
 }

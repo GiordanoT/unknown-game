@@ -1,10 +1,12 @@
 import {ProxyWrapper} from "@/utils/proxy";
-import {U} from "@/utils/functions";
-import {DPointer, LPointer} from "@/data/Pointer";
+import {DPointer, LPointer, PPointer} from "@/data/Pointer";
 import {Action} from "@/utils/actions";
 
 ///<reference path='Pointer.ts' />
-export interface DNamed extends DPointer {name: string;}
+export interface DNamed extends DPointer {
+    name: string;
+}
+
 export class LNamed extends LPointer implements DNamed {
     classname = LNamed.name;
     name: string;
@@ -15,9 +17,9 @@ export class LNamed extends LPointer implements DNamed {
         super(pointer);
         this.name = named.name;
     }
-    static new(named: DNamed): LNamed {
+    static new(named: DNamed): PNamed {
         const obj = new LNamed(named);
-        return new Proxy(obj, ProxyWrapper.handler<LNamed>());
+        return ProxyWrapper.wrap<PNamed>(new Proxy(obj, ProxyWrapper.handler<LNamed>()));
     }
 
     getName(): this['name'] {return this.name;}
@@ -26,4 +28,8 @@ export class LNamed extends LPointer implements DNamed {
         Action.EDIT<DNamed>(this.getRaw(), 'name', name, layer);
     }
 
+}
+
+export interface PNamed extends PPointer {
+    name: string;
 }

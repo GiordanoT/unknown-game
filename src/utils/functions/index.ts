@@ -51,4 +51,9 @@ export class U {
         }).reduce((a, [key, v]) => ({...a, [key]: v}), {});
         for(let field in changes) ReduxAction.edit(oldObject, field as keyof DObject, changes[field]);
     }
+
+    public static async sleep(seconds: number): Promise<void> {
+        return new Promise(resolve => setTimeout(resolve, seconds * 1000));
+    }
+
 }

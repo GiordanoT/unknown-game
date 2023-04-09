@@ -3,7 +3,8 @@ import {RootState} from "@/redux";
 import {Dispatch} from "redux";
 import {connect} from "react-redux";
 import Navbar from "@/components/common/Navbar";
-import {LUser} from "@/data/User";
+import {DUser, LUser, PUser} from "@/data/User";
+import {Pointer} from "@/utils/type";
 
 function ProfilePage(props: AllProps) {
     const user = props.user;
@@ -14,7 +15,7 @@ function ProfilePage(props: AllProps) {
     }
 
     return (<div>
-        <Navbar />
+        <Navbar userID={user.id} />
         <div className={'card mx-auto mt-3'}>
             <label className={'d-block'}><b>Profile</b></label>
             <hr />
@@ -29,14 +30,13 @@ function ProfilePage(props: AllProps) {
         </div>
     </div>);
 }
-interface OwnProps {}
-interface StateProps {user: null|LUser}
+interface OwnProps {userID: Pointer<DUser>}
+interface StateProps {user: PUser}
 interface DispatchProps {}
 type AllProps = OwnProps & StateProps & DispatchProps;
 
 function mapStateToProps(state: RootState, ownProps: OwnProps): StateProps {
-    const pointer = state.user.pointer; let user = null;
-    if(pointer) user = LUser.fromPointer(pointer);
+    const user = LUser.fromPointer(ownProps.userID);
     return {user};
 }
 

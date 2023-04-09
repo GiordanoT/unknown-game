@@ -1,10 +1,9 @@
 import {Pointer} from "@/utils/type";
 import {ProxyWrapper} from "@/utils/proxy";
-import {DPointer, LPointer} from "@/data/Pointer";
-import {DUser} from "@/data/User";
+import {DPointer, LPointer, PPointer} from "@/data/Pointer";
+import {DUser, LUser, PUser} from "@/data/User";
 import {store} from "@/redux";
 import {Action} from "@/utils/actions";
-import {DNamed} from "@/data/Named";
 
 ///<reference path='Pointer.ts' />
 export interface DGame extends DPointer {
@@ -30,27 +29,30 @@ export class LGame extends LPointer implements DGame {
         this.playerTwo = game.playerTwo;
         this.running = game.running;
     }
-    static new(game: DGame): LGame {
+    static new(game: DGame): PGame {
         const obj = new LGame(game);
-        return new Proxy(obj, ProxyWrapper.handler<LGame>());
+        return ProxyWrapper.wrap<PGame>(new Proxy(obj, ProxyWrapper.handler<LGame>()));
     }
 
-    static fromPointer(pointer: Pointer<DGame>): LGame {
+    static fromPointer(pointer: Pointer<DGame>): PGame {
         const objects = store.getState().objects;
         const object = objects[pointer] as DGame;
         return LGame.new(object);
     }
 
-    getPlayerOne(): this['playerOne'] {return this.playerOne;}
-    setPlayerOne(player: this['playerOne']): void {
-        this.playerOne = player;
-        Action.EDIT<DGame>(this.getRaw(), 'playerOne', player, Action.Mixin);
+    getPlayerOne(): PUser {return LUser.fromPointer(this.playerOne);}
+    setPlayerOne(player: PUser): void {
+        this.playerOne = player.id;
+        Action.EDIT<DGame>(this.getRaw(), 'playerOne', player.id, Action.Mixin);
     }
 
-    getPlayerTwo(): this['playerTwo'] {return this.playerTwo;}
-    setPlayerTwo(player: this['playerTwo']): void {
-        this.playerTwo = player;
-        Action.EDIT<DGame>(this.getRaw(), 'playerTwo', player, Action.Mixin);
+    getPlayerTwo(): null|PUser {
+        if(this.playerTwo) return LUser.fromPointer(this.playerTwo);
+        else return null;
+    }
+    setPlayerTwo(player: PUser): void {
+        this.playerTwo = player.id;
+        Action.EDIT<DGame>(this.getRaw(), 'playerTwo', player.id, Action.Mixin);
     }
 
     getRunning(): this['running'] {return this.running;}
@@ -64,4 +66,11 @@ export class LGame extends LPointer implements DGame {
         this.code = code;
         Action.EDIT<DGame>(this.getRaw(), 'code', code, Action.Mixin);
     }
+}
+
+export interface PGame extends PPointer {
+    code: string,
+    playerOne: PUser,
+    playerTwo: null|PUser,
+    running: boolean
 }

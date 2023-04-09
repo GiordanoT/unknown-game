@@ -41,5 +41,10 @@ export class ReduxAction {
         store.dispatch(objectSlice.actions.edit({obj, field: String(field), value}));
         U.log('EDIT OBJ', obj);
     }
+
+    static reset(): void {
+        const objects = store.getState().objects;
+        for(let pointer in objects) ReduxAction.remove(objects[pointer]);
+    }
 }
 

@@ -4,13 +4,19 @@ import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
 import {FirebaseAction} from "@/firebase/actions";
 import {useRouter} from "next/router";
-import {LUser} from "@/data/User";
+import {DUser, LUser, PUser} from "@/data/User";
+import {Pointer} from "@/utils/type";
+import {U} from "@/utils/functions";
 
 export function NavbarComponent(props: AllProps) {
     const user = props.user;
     const router = useRouter();
 
-    const logout = () => {if(user) FirebaseAction.logout(user)}
+    const logout = async() => {
+        goto('auth');
+        await U.sleep(1);
+        await FirebaseAction.logout();
+    }
     const goto = (link: string) => {router.push('/' + link).then()}
     const debug = () => {console.log(store.getState())}
 
@@ -20,7 +26,7 @@ export function NavbarComponent(props: AllProps) {
         <button onClick={() => goto('profile')} className={'btn btn-primary ms-2'}>Profile</button>
         <button onClick={debug} className={'btn btn-warning ms-2'}>DEBUG</button>
         <div className={'ms-auto'}>
-            <label className={'text-white my-auto me-3'}>{user?.name}</label>
+            <label className={'text-white my-auto me-3'}>{user.name}</label>
             <button onClick={logout} className={'btn btn-danger'}>Logout</button>
         </div>
     </nav>);
@@ -28,14 +34,13 @@ export function NavbarComponent(props: AllProps) {
 
 }
 
-interface OwnProps {}
-interface StateProps {user : null|LUser}
+interface OwnProps {userID: Pointer<DUser>}
+interface StateProps {user : PUser}
 interface DispatchProps {}
 type AllProps = OwnProps & StateProps & DispatchProps;
 
 function mapStateToProps(state: RootState, ownProps: OwnProps): StateProps {
-    const pointer = state.user.pointer; let user: null|LUser = null;
-    if(pointer) user = LUser.fromPointer(pointer);
+    const user = LUser.fromPointer(ownProps.userID);
     return {user}
 }
 
