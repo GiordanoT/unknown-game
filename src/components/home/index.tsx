@@ -9,57 +9,57 @@ import {DGame, LGame, PGame} from "@/data/Game";
 import {Action} from "@/utils/actions";
 import {FirebaseAction} from "@/firebase/actions";
 import {U} from "@/utils/functions";
-import Game from "@/components/game/Game";
+import {DPlayer, LPlayer, PPlayer} from "@/data/Player";
+import {useRouter} from "next/router";
 
 function HomeComponent(props: AllProps) {
+    const router = useRouter();
     const user = props.user;
     const game = props.game;
     const [gameCode, setGameCode] = useState('');
 
-    useEffect(() => {
-        if(game) {
-            FirebaseAction.load('games', LGame.name, game.id);
-            if(game.running) setGameCode('');
-            else setGameCode(game.code);
-        }
-    }, [game])
-
     const create = () => {
-        const dGame: DGame = {code: U.getRandomString(5), playerOne: user.id, playerTwo: null, running: false};
+        const dPlayer: DPlayer = {name: user.name, sign: U.retrieveSign(user.id)};
+        const player = LPlayer.new(dPlayer);
+        Action.ADD(player.raw, Action.Mixin);
+        const dGame: DGame = {code: U.getRandomString(5), playerOne: player.id, playerTwo: null, running: false};
         const pGame = LGame.new(dGame);
         Action.ADD(pGame.raw, Action.Mixin);
-        setGameCode(pGame.code);
+        U.goto(router, 'game');
     }
+
     const join = async() => {
         const constraint: CONSTRAINT<DGame> = {field: 'code', operator: '==', value: gameCode};
         const games = await FirebaseAction.select<DGame>('games', constraint);
         if(games.length > 0) {
             const dGame = games[0];
             if(!dGame.running) {
-                const pGame = LGame.new(dGame);
-                Action.ADD(pGame.raw, Action.Redux);
-                pGame.running = true; pGame.playerTwo = user;
+                const game = LGame.new(dGame);
+                Action.ADD(game.raw, Action.Redux);
+                const dPlayer: DPlayer = {name: user.name, sign: U.retrieveSign(user.id)};
+                const player = LPlayer.new(dPlayer);
+                Action.ADD(player.raw, Action.Mixin);
+                game.running = true; game.playerTwo = player;
+                U.goto(router, 'game');
             } else alert('game is running');
         } else alert('invalid gameID');
     }
 
-    if(game && game.running) {
-        return(<Game game={game} />);
-    } else {
-        return(<div>
-            <Navbar userID={user.id} />
-            <div className={'card shadow mt-4 mx-auto'}>
-                <label className={'d-block'}><b>GAME</b></label>
-                <hr />
-                <button className={'btn btn-primary mt-2'} onClick={create} disabled={game !== null}>Create</button>
-                <label className={'d-block mt-2 mb-2'}>OR</label>
-                <div className={'d-flex justify-content-center'}>
-                    <input value={gameCode} className={'input'} onChange={(evt) => setGameCode(evt.target.value)} type={'text'} />
-                    <button className={'ms-1 btn btn-primary'} onClick={join} disabled={game !== null}>Join</button>
-                </div>
+
+    return(<div>
+        <Navbar userID={user.id} />
+        <div className={'card shadow mt-4 mx-auto'}>
+            <label className={'d-block'}><b>GAME</b></label>
+            <hr />
+            <button className={'btn btn-primary mt-2'} onClick={create} disabled={game !== null}>Create</button>
+            <label className={'d-block mt-2 mb-2'}>OR</label>
+            <div className={'d-flex justify-content-center'}>
+                <input className={'input'} onChange={(evt) => setGameCode(evt.target.value)} type={'text'} />
+                <button className={'ms-1 btn btn-primary'} onClick={join} disabled={game !== null}>Join</button>
             </div>
-        </div>);
-    }
+        </div>
+    </div>);
+
 
 }
 

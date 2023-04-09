@@ -1,23 +1,23 @@
 import {Pointer} from "@/utils/type";
 import {ProxyWrapper} from "@/utils/proxy";
 import {DPointer, LPointer, PPointer} from "@/data/Pointer";
-import {DUser, LUser, PUser} from "@/data/User";
 import {store} from "@/redux";
 import {Action} from "@/utils/actions";
+import {DPlayer, LPlayer, PPlayer} from "@/data/Player";
 
 ///<reference path='Pointer.ts' />
 export interface DGame extends DPointer {
     code: string,
-    playerOne: Pointer<DUser>,
-    playerTwo: null|Pointer<DUser>,
+    playerOne: null|Pointer<DPlayer>,
+    playerTwo: null|Pointer<DPlayer>,
     running: boolean
 }
 
 export class LGame extends LPointer implements DGame {
     classname = LGame.name;
     code: string;
-    playerOne: Pointer<DUser>;
-    playerTwo: null|Pointer<DUser>;
+    playerOne: null|Pointer<DPlayer>;
+    playerTwo: null|Pointer<DPlayer>;
     running: boolean;
     raw!: DGame;
 
@@ -40,17 +40,20 @@ export class LGame extends LPointer implements DGame {
         return LGame.new(object);
     }
 
-    getPlayerOne(): PUser {return LUser.fromPointer(this.playerOne);}
-    setPlayerOne(player: PUser): void {
+    getPlayerOne(): null|PPlayer {
+        if(this.playerOne) return LPlayer.fromPointer(this.playerOne);
+        else return null;
+    }
+    setPlayerOne(player: PPlayer): void {
         this.playerOne = player.id;
         Action.EDIT<DGame>(this.getRaw(), 'playerOne', player.id, Action.Mixin);
     }
 
-    getPlayerTwo(): null|PUser {
-        if(this.playerTwo) return LUser.fromPointer(this.playerTwo);
+    getPlayerTwo(): null|PPlayer {
+        if(this.playerTwo) return LPlayer.fromPointer(this.playerTwo);
         else return null;
     }
-    setPlayerTwo(player: PUser): void {
+    setPlayerTwo(player: PPlayer): void {
         this.playerTwo = player.id;
         Action.EDIT<DGame>(this.getRaw(), 'playerTwo', player.id, Action.Mixin);
     }
@@ -70,7 +73,7 @@ export class LGame extends LPointer implements DGame {
 
 export interface PGame extends PPointer {
     code: string,
-    playerOne: PUser,
-    playerTwo: null|PUser,
+    playerOne: null|PPlayer,
+    playerTwo: null|PPlayer,
     running: boolean
 }

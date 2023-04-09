@@ -3,15 +3,16 @@ import {ProxyWrapper} from "@/utils/proxy";
 import {store} from "@/redux";
 import {Action} from "@/utils/actions";
 import {DNamed, LNamed, PNamed} from "@/data/Named";
+import {U} from "@/utils/functions";
 
 ///<reference path='Named.ts' />
 export interface DUser extends DNamed {
-    email: string
+    email: string;
 }
 
 export class LUser extends LNamed implements DUser {
     classname = LUser.name;
-    email: string;
+    email: string
     raw!: DUser;
 
     protected constructor(user: DUser) {
@@ -27,11 +28,10 @@ export class LUser extends LNamed implements DUser {
     static fromPointer(pointer: Pointer<DUser>): PUser {
         const objects = store.getState().objects;
         const object = objects[pointer] as DUser;
-        return LUser.new(object) as any;
+        return LUser.new(object);
     }
     setName(name: this['name']): void {super.setName(name, Action.Mixin);}
-    getEmail(): this['email'] { return this.email; }
-    setEmail(): void {}
+    getEmail(): string { return this.email; }
 }
 
 export interface PUser extends PNamed {
