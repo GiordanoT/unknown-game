@@ -4,7 +4,9 @@ import {
     deleteDoc,
     doc,
     getDocs,
-    onSnapshot, or, Query,
+    onSnapshot,
+    or,
+    Query,
     query,
     QueryFieldFilterConstraint,
     setDoc,
@@ -56,9 +58,9 @@ export class FirebaseAction {
         return objects
     }
 
-    static load(collectionName: string, className: string, id?: Pointer): void {
-        if(id) FirebaseAction._loadDocument(collectionName, id, className).then();
-        else FirebaseAction._loadCollection(collectionName, className).then();
+    static async load(collectionName: string, className: string, id?: Pointer): Promise<void> {
+        if(id) await FirebaseAction._loadDocument(collectionName, id, className);
+        else await FirebaseAction._loadCollection(collectionName, className);
     }
 
     private static async _loadDocument(collectionName: string, id: Pointer, className: string): Promise<void> {
@@ -78,8 +80,7 @@ export class FirebaseAction {
         });
     }
 
-    static add(obj: DObject): void {FirebaseAction._add(obj).then();}
-    private static async _add(obj: DObject): Promise<void> {
+    static async add(obj: DObject): Promise<void> {
         const collection = U.getCollection(obj);
         if(collection) {
             const DOC = doc(db, collection, String(obj.id));
@@ -87,8 +88,7 @@ export class FirebaseAction {
         }
     }
 
-    static remove(obj: DObject): void {FirebaseAction._remove(obj).then();}
-    private static async _remove(obj: DObject): Promise<void> {
+    static async remove(obj: DObject): Promise<void> {
         const collection = U.getCollection(obj);
         if(collection) {
             const DOC = doc(db, collection, String(obj.id));
@@ -96,8 +96,7 @@ export class FirebaseAction {
         }
     }
 
-    static edit<T extends DPointer>(obj: T, field: keyof T, Value: Value): void {FirebaseAction._edit<T>(obj, field, Value).then();}
-    private static async _edit<T extends DPointer>(obj: T, field: keyof T, Value: Value): Promise<void> {
+    static async edit<T extends DPointer>(obj: T, field: keyof T, Value: Value): Promise<void> {
         const collection = U.getCollection(obj);
         if(collection) {
             const DOC = doc(db, collection, String(obj.id));
@@ -109,7 +108,7 @@ export class FirebaseAction {
         try {
             await createUserWithEmailAndPassword(auth, email, password);
             const name = 'USER' + Date.now();
-            const dUser: DUser = {name, email};
+            const dUser: DUser = {name, email, role: 'playerOne'};
             const user = LUser.new(dUser);
             MixinAction.add(user.raw);
             return true;
@@ -128,7 +127,6 @@ export class FirebaseAction {
 
     static async logout(): Promise<void> {
         await signOut(auth);
-        // ReduxAction.remove(user.raw);
         ReduxAction.reset();
     }
 

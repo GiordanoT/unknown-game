@@ -34,4 +34,6 @@ export class LPlayer extends LNamed implements DPlayer {
     setSign(sign: string): void {Action.EDIT<DPlayer>(this.getRaw(), 'sign', sign, Action.Mixin)}
 }
 
-export interface PPlayer extends PNamed {}
+export interface PPlayer extends PNamed {
+    sign: string;
+}

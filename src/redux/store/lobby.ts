@@ -10,7 +10,7 @@ export const lobbySlice = createSlice({
     reducers: {
         add(state: T, action: PayloadAction<Pointer<DLobby>>){
             const pointer = action.payload;
-            state.pointers.push(pointer);
+            if(!state.pointers.includes(pointer)) state.pointers.push(pointer);
         },
         remove(state: T, action: PayloadAction<Pointer<DLobby>>) {
             const pointer = action.payload;

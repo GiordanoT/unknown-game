@@ -22,9 +22,16 @@ function HomeComponent(props: AllProps) {
         const dPlayer: DPlayer = {name: user.name, sign: U.retrieveSign(user.id)};
         const player = LPlayer.new(dPlayer);
         Action.ADD(player.raw, Action.Mixin);
-        const dGame: DGame = {code: U.getRandomString(5), playerOne: player.id, playerTwo: null, running: false};
+        const dGame: DGame = {
+            code: U.getRandomString(5),
+            playerOne: player.id,
+            playerTwo: null,
+            running: false,
+            eliminable: false
+        };
         const pGame = LGame.new(dGame);
         Action.ADD(pGame.raw, Action.Mixin);
+        user.role = 'playerOne';
         U.goto(router, 'game');
     }
 
@@ -39,7 +46,9 @@ function HomeComponent(props: AllProps) {
                 const dPlayer: DPlayer = {name: user.name, sign: U.retrieveSign(user.id)};
                 const player = LPlayer.new(dPlayer);
                 Action.ADD(player.raw, Action.Mixin);
+                await U.sleep(2)
                 game.running = true; game.playerTwo = player;
+                user.role = 'playerTwo';
                 U.goto(router, 'game');
             } else alert('game is running');
         } else alert('invalid gameID');

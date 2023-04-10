@@ -10,7 +10,7 @@ export const playerSlice = createSlice({
     reducers: {
         add(state: T, action: PayloadAction<Pointer<DUser>>){
             const pointer = action.payload;
-            state.pointers.push(pointer);
+            if(!state.pointers.includes(pointer)) state.pointers.push(pointer);
         },
         remove(state: T, action: PayloadAction<Pointer<DUser>>) {
             const pointer = action.payload;

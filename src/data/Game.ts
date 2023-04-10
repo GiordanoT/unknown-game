@@ -7,10 +7,11 @@ import {DPlayer, LPlayer, PPlayer} from "@/data/Player";
 
 ///<reference path='Pointer.ts' />
 export interface DGame extends DPointer {
-    code: string,
-    playerOne: null|Pointer<DPlayer>,
-    playerTwo: null|Pointer<DPlayer>,
-    running: boolean
+    code: string;
+    playerOne: null|Pointer<DPlayer>;
+    playerTwo: null|Pointer<DPlayer>;
+    running: boolean;
+    eliminable: boolean;
 }
 
 export class LGame extends LPointer implements DGame {
@@ -19,6 +20,7 @@ export class LGame extends LPointer implements DGame {
     playerOne: null|Pointer<DPlayer>;
     playerTwo: null|Pointer<DPlayer>;
     running: boolean;
+    eliminable: boolean;
     raw!: DGame;
 
     protected constructor(game: DGame) {
@@ -28,6 +30,7 @@ export class LGame extends LPointer implements DGame {
         this.playerOne = game.playerOne;
         this.playerTwo = game.playerTwo;
         this.running = game.running;
+        this.eliminable = game.eliminable;
     }
     static new(game: DGame): PGame {
         const obj = new LGame(game);
@@ -40,40 +43,48 @@ export class LGame extends LPointer implements DGame {
         return LGame.new(object);
     }
 
+    getCode(): string {return this.code;}
+    setCode(value: string): void {
+        this.code = value;
+        Action.EDIT<DGame>(this.getRaw(), 'code', value, Action.Mixin);
+    }
+
     getPlayerOne(): null|PPlayer {
         if(this.playerOne) return LPlayer.fromPointer(this.playerOne);
         else return null;
     }
-    setPlayerOne(player: PPlayer): void {
-        this.playerOne = player.id;
-        Action.EDIT<DGame>(this.getRaw(), 'playerOne', player.id, Action.Mixin);
+    setPlayerOne(value: PPlayer): void {
+        this.playerOne = value.id;
+        Action.EDIT<DGame>(this.getRaw(), 'playerOne', value.id, Action.Mixin);
     }
 
     getPlayerTwo(): null|PPlayer {
         if(this.playerTwo) return LPlayer.fromPointer(this.playerTwo);
         else return null;
     }
-    setPlayerTwo(player: PPlayer): void {
-        this.playerTwo = player.id;
-        Action.EDIT<DGame>(this.getRaw(), 'playerTwo', player.id, Action.Mixin);
+    setPlayerTwo(value: PPlayer): void {
+        this.playerTwo = value.id;
+        Action.EDIT<DGame>(this.getRaw(), 'playerTwo', value.id, Action.Mixin);
     }
 
-    getRunning(): this['running'] {return this.running;}
-    setRunning(running: this['running']): void {
-        this.running = running;
-        Action.EDIT<DGame>(this.getRaw(), 'running', running, Action.Mixin);
+    getRunning(): boolean {return this.running;}
+    setRunning(value: boolean): void {
+        this.running = value;
+        Action.EDIT<DGame>(this.getRaw(), 'running', value, Action.Mixin);
     }
 
-    getCode(): this['code'] {return this.code;}
-    setCode(code: this['code']): void {
-        this.code = code;
-        Action.EDIT<DGame>(this.getRaw(), 'code', code, Action.Mixin);
+    getEliminable(): boolean {return this.eliminable;}
+    setEliminable(value: boolean): void {
+        this.running = value;
+        Action.EDIT<DGame>(this.getRaw(), 'eliminable', value, Action.Firebase);
     }
+
 }
 
 export interface PGame extends PPointer {
-    code: string,
-    playerOne: null|PPlayer,
-    playerTwo: null|PPlayer,
-    running: boolean
+    code: string;
+    playerOne: null|PPlayer;
+    playerTwo: null|PPlayer;
+    running: boolean;
+    eliminable: boolean;
 }

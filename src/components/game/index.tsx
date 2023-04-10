@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {RootState} from '@/redux';
 import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
@@ -16,26 +16,38 @@ function GameComponent(props: AllProps) {
     const router = useRouter();
     const user = props.user;
     const game = props.game;
+    const [isLoading, setLoading] = useState(true);
 
     useEffectOnce(() => {
-        FirebaseAction.load('games', LGame.name, game.id);
+        FirebaseAction.load('games', LGame.name, game.id).then(() => {
+            setLoading(false);
+        });
     });
 
     const end = async() => {
         U.goto(router, 'profile');
-        await U.sleep(2)
-        if(game.playerOne) Action.REMOVE(game.playerOne.raw, Action.Mixin);
-        if(game.playerTwo) Action.REMOVE(game.playerTwo.raw, Action.Mixin);
-        Action.REMOVE(game.raw, Action.Mixin);
+        const player = game[user.role]; if(player) player.sign = '';
+        await U.sleep(2);
+        if(game.eliminable) {
+            if(game.playerOne) Action.REMOVE(game.playerOne.raw, Action.Mixin);
+            if(game.playerTwo) Action.REMOVE(game.playerTwo.raw, Action.Mixin);
+            Action.REMOVE(game.raw, Action.Mixin);
+        } else {
+            game.eliminable = true;
+            if(game.playerOne) Action.REMOVE(game.playerOne.raw, Action.Redux);
+            if(game.playerTwo) Action.REMOVE(game.playerTwo.raw, Action.Redux);
+            Action.REMOVE(game.raw, Action.Redux);
+        }
     }
 
-    return(<div>
-        <Navbar userID={user.id} />
-        <div><b>CODE:</b>{game.code}</div>
-        <div><b>P1:</b>{game.playerOne?.name}</div>
-        <div><b>P2:</b>{game.playerTwo?.name}</div>
-        <button className={'btn btn-danger'} onClick={end}>END</button>
-    </div>);
+    if(!isLoading) {
+        return(<div>
+            <Navbar userID={user.id} />
+            <div><b>CODE:</b>{game.code}</div>
+            <button className={'btn btn-danger'} onClick={end}>END</button>
+        </div>);
+    } else return(<div></div>);
+
 }
 
 interface OwnProps {userID: Pointer<DUser>, gameID: Pointer<DGame>}
