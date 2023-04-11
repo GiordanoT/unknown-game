@@ -68,7 +68,10 @@ export class U {
         const changes: Dictionary<Value> = Object.entries(newObject).filter(([key, val]) => {
             return oldObject[key as keyof DObject] !== val && key in oldObject
         }).reduce((a, [key, v]) => ({...a, [key]: v}), {});
-        for(let field in changes) ReduxAction.edit(oldObject, field as keyof DObject, changes[field]);
+        for(let field in changes)
+            ReduxAction.editFIX(oldObject, field, changes[field]).then((dict) => {
+                ReduxAction.edit(dict.obj, dict.field, dict.value);
+            });
     }
 
     public static async sleep(seconds: number): Promise<void> {

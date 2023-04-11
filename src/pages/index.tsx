@@ -12,6 +12,7 @@ import {CONSTRAINT} from "@/utils/type";
 import {DPlayer} from "@/data/Player";
 import {FirebaseAction} from "@/firebase/actions";
 import {Action} from "@/utils/actions";
+import {ReduxAction} from "@/redux/actions";
 
 export default function HomePage() {
     const router = useRouter();
@@ -37,8 +38,10 @@ export default function HomePage() {
                         FirebaseAction.select('games', constraints, false).then((games) => {
                             if(games.length > 0) {
                                 const dGame = games[0];
-                                Action.ADD(dGame, Action.Redux);
-                                U.goto(router, 'game');
+                                ReduxAction.addFIX(dGame).then((dict) => {
+                                    Action.ADD(dict.obj, Action.Redux);
+                                    U.goto(router, 'game');
+                                });
                             }
                         });
                     }

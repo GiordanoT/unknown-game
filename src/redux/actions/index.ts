@@ -19,18 +19,20 @@ export class ReduxAction {
         }
         for(let newObject of newObjects) {
             const oldObject = oldObjects.find((obj) => {return obj.id === newObject.id});
-            if(!oldObject) ReduxAction.add(newObject);
-            else U.delta(oldObject, newObject);
+            if(!oldObject) {
+                for(let field in newObject)
+                    ReduxAction.addFIX(newObject).then((dict) => {
+                        ReduxAction.add(dict.obj);
+                    });
+            } else U.delta(oldObject, newObject);
         }
     }
 
     static add(obj: DObject): void {
-        ReduxAction.add_FixMissingID(obj).then(() => {
-            store.dispatch(objectSlice.actions.add(obj));
-            U.log(`ADD ${obj.classname}`, obj);
-            const slice = U.getSlice(obj);
-            if(slice) ReduxPointerAction.add(slice, obj);
-        });
+        store.dispatch(objectSlice.actions.add(obj));
+        U.log(`ADD ${obj.classname}`, obj);
+        const slice = U.getSlice(obj);
+        if(slice) ReduxPointerAction.add(slice, obj);
     }
 
     static remove(obj: DObject): void {
@@ -41,10 +43,8 @@ export class ReduxAction {
     }
 
     static edit<T extends DPointer>(obj: T, field: keyof T, value: Value): void {
-        ReduxAction.edit_FixMissingID(String(field), value).then(() => {
-            store.dispatch(objectSlice.actions.edit({obj, field: String(field), value}));
-            U.log(`EDIT ${obj.classname}: ${String(field)} -> ${value}`);
-        });
+        store.dispatch(objectSlice.actions.edit({obj, field: String(field), value}));
+        U.log(`EDIT ${obj.classname}: ${String(field)} -> ${value}`);
     }
 
     static reset(): void {
@@ -52,19 +52,13 @@ export class ReduxAction {
         for(let pointer in objects) ReduxAction.remove(objects[pointer]);
     }
 
-    private static async add_FixMissingID(obj: DObject): Promise<void> {
-        for(let field in obj) {
-            const value = obj[field as keyof DObject];
-            if(value) await ReduxAction.edit_FixMissingID(field, value);
-        }
-    }
-
-    private static async edit_FixMissingID(field: string, value: Value): Promise<void> {
-        if(typeof value === 'string' && U.isPointer(value)) {
+    static async editFIX(obj: DObject, field: string, value: Value): Promise<{obj: DObject, field: keyof DObject, value: Value}> {
+        const excludedFields = ['id'];
+        if(!excludedFields.includes(field) && typeof value === 'string' && U.isPointer(value)) {
             const pointer = value;
             const objects = store.getState().objects;
             const object: DObject|undefined = objects[pointer];
-            if(field !== 'id' && !object) {
+            if(!object) {
                 const collection = U.getCollection(field);
                 const constraint: CONSTRAINT<DObject> = {field: 'id', operator: '==', value: pointer}
                 if(collection) {
@@ -76,6 +70,31 @@ export class ReduxAction {
                 }
             }
         }
+        return {obj, field: field as keyof DObject, value};
+    }
+
+    static async addFIX(obj: DObject): Promise<{obj: DObject}> {
+        const excludedFields = ['id'];
+        for(let field in obj) {
+            const value = obj[field as keyof DObject];
+            if(!excludedFields.includes(field) && typeof value === 'string' && U.isPointer(value)) {
+                const pointer = value;
+                const objects = store.getState().objects;
+                const object: DObject|undefined = objects[pointer];
+                if(!object) {
+                    const collection = U.getCollection(field);
+                    const constraint: CONSTRAINT<DObject> = {field: 'id', operator: '==', value: pointer}
+                    if(collection) {
+                        const results = await FirebaseAction.select<DObject>(collection, constraint)
+                        if(results.length > 0) {
+                            const result = results[0];
+                            ReduxAction.add(result);
+                        }
+                    }
+                }
+            }
+        }
+        return {obj};
     }
 }
 

@@ -11,6 +11,7 @@ import {FirebaseAction} from "@/firebase/actions";
 import {U} from "@/utils/functions";
 import {DPlayer, LPlayer, PPlayer} from "@/data/Player";
 import {useRouter} from "next/router";
+import {ReduxAction} from "@/redux/actions";
 
 function HomeComponent(props: AllProps) {
     const router = useRouter();
@@ -42,11 +43,12 @@ function HomeComponent(props: AllProps) {
             const dGame = games[0];
             if(!dGame.running) {
                 const game = LGame.new(dGame);
-                Action.ADD(game.raw, Action.Redux);
+                ReduxAction.addFIX(game.raw).then((dict) => {
+                    Action.ADD(dict.obj, Action.Redux);
+                });
                 const dPlayer: DPlayer = {name: user.name, sign: U.retrieveSign(user.id)};
                 const player = LPlayer.new(dPlayer);
                 Action.ADD(player.raw, Action.Mixin);
-                await U.sleep(2)
                 game.running = true; game.playerTwo = player;
                 user.role = 'playerTwo';
                 U.goto(router, 'game');

@@ -17,9 +17,13 @@ export const objectSlice = createSlice({
         },
         edit(state: Dictionary<T>, action: PayloadAction<EDIT>) {
             const payload = action.payload;
+
             const obj = payload.obj;
-            const field = payload.field;
-            state[String(obj.id)][field as keyof T] = payload.value;
+            const pointer = String(obj.id);
+            const field = payload.field as keyof T;
+            if(state[pointer]) state[pointer][field] = payload.value;
+            else console.error(pointer + ' is NOT in objects');
+
         }
     }
 });

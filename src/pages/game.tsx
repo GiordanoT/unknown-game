@@ -7,8 +7,6 @@ import Loading from "@/components/common/Loading";
 import {U} from "@/utils/functions";
 import Game from "@/components/game";
 import {useRouter} from "next/router";
-import {LGame, PGame} from "@/data/Game";
-import {FirebaseAction} from "@/firebase/actions";
 
 export default function HomePage() {
     const router = useRouter();

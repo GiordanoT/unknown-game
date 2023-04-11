@@ -16,13 +16,8 @@ function GameComponent(props: AllProps) {
     const router = useRouter();
     const user = props.user;
     const game = props.game;
-    const [isLoading, setLoading] = useState(true);
 
-    useEffectOnce(() => {
-        FirebaseAction.load('games', LGame.name, game.id).then(() => {
-            setLoading(false);
-        });
-    });
+    useEffectOnce(() => {FirebaseAction.load('games', LGame.name, game.id).then();});
 
     const end = async() => {
         U.goto(router, 'profile');
@@ -40,13 +35,15 @@ function GameComponent(props: AllProps) {
         }
     }
 
-    if(!isLoading) {
-        return(<div>
-            <Navbar userID={user.id} />
-            <div><b>CODE:</b>{game.code}</div>
-            <button className={'btn btn-danger'} onClick={end}>END</button>
-        </div>);
-    } else return(<div></div>);
+    return(<div>
+        <Navbar userID={user.id} />
+        <div><b>CODE:</b>{game.code}</div>
+        <div><b>P1:</b>{game.playerOne?.name}</div>
+        <div><b>P2:</b>{game.playerTwo?.name}</div>
+        <div><b>Eliminable:</b>{String(game.eliminable)}</div>
+        <button className={'btn btn-danger'} onClick={end}>END</button>
+    </div>);
+
 
 }
 
