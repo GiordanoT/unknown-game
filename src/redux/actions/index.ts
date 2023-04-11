@@ -19,20 +19,18 @@ export class ReduxAction {
         }
         for(let newObject of newObjects) {
             const oldObject = oldObjects.find((obj) => {return obj.id === newObject.id});
-            if(!oldObject) {
-                for(let field in newObject)
-                    ReduxAction.addFIX(newObject).then((dict) => {
-                        ReduxAction.add(dict.obj);
-                    });
-            } else U.delta(oldObject, newObject);
+            if(!oldObject) ReduxAction.add(dict.obj);
+            else U.delta(oldObject, newObject);
         }
     }
 
     static add(obj: DObject): void {
-        store.dispatch(objectSlice.actions.add(obj));
-        U.log(`ADD ${obj.classname}`, obj);
-        const slice = U.getSlice(obj);
-        if(slice) ReduxPointerAction.add(slice, obj);
+        ReduxAction.addFIX(obj).then((dict) => {
+            store.dispatch(objectSlice.actions.add(dict.obj));
+            U.log(`ADD ${obj.classname}`, dict.obj);
+            const slice = U.getSlice(dict.obj);
+            if(slice) ReduxPointerAction.add(slice, dict.obj);
+        });
     }
 
     static remove(obj: DObject): void {
@@ -43,8 +41,11 @@ export class ReduxAction {
     }
 
     static edit<T extends DPointer>(obj: T, field: keyof T, value: Value): void {
-        store.dispatch(objectSlice.actions.edit({obj, field: String(field), value}));
-        U.log(`EDIT ${obj.classname}: ${String(field)} -> ${value}`);
+        ReduxAction.editFIX(obj, String(field), value).then((dict) => {
+            const dEdit = {obj: dict.obj, field: dict.field, value: dict.value};
+            store.dispatch(objectSlice.actions.edit(dEdit));
+            U.log(`EDIT ${obj.classname}: ${String(dict.field)} -> ${dict.value}`);
+        });
     }
 
     static reset(): void {
@@ -52,7 +53,7 @@ export class ReduxAction {
         for(let pointer in objects) ReduxAction.remove(objects[pointer]);
     }
 
-    static async editFIX(obj: DObject, field: string, value: Value): Promise<{obj: DObject, field: keyof DObject, value: Value}> {
+    private static async editFIX(obj: DObject, field: string, value: Value): Promise<{obj: DObject, field: keyof DObject, value: Value}> {
         const excludedFields = ['id'];
         if(!excludedFields.includes(field) && typeof value === 'string' && U.isPointer(value)) {
             const pointer = value;
@@ -73,7 +74,7 @@ export class ReduxAction {
         return {obj, field: field as keyof DObject, value};
     }
 
-    static async addFIX(obj: DObject): Promise<{obj: DObject}> {
+    private static async addFIX(obj: DObject): Promise<{obj: DObject}> {
         const excludedFields = ['id'];
         for(let field in obj) {
             const value = obj[field as keyof DObject];

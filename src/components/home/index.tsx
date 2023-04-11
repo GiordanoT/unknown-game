@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {RootState} from '@/redux';
 import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
@@ -9,9 +9,8 @@ import {DGame, LGame, PGame} from "@/data/Game";
 import {Action} from "@/utils/actions";
 import {FirebaseAction} from "@/firebase/actions";
 import {U} from "@/utils/functions";
-import {DPlayer, LPlayer, PPlayer} from "@/data/Player";
+import {DPlayer, LPlayer} from "@/data/Player";
 import {useRouter} from "next/router";
-import {ReduxAction} from "@/redux/actions";
 
 function HomeComponent(props: AllProps) {
     const router = useRouter();
@@ -33,7 +32,7 @@ function HomeComponent(props: AllProps) {
         const pGame = LGame.new(dGame);
         Action.ADD(pGame.raw, Action.Mixin);
         user.role = 'playerOne';
-        U.goto(router, 'game');
+        U.sleep(1).then(() => U.goto(router, 'game'));
     }
 
     const join = async() => {
@@ -43,15 +42,13 @@ function HomeComponent(props: AllProps) {
             const dGame = games[0];
             if(!dGame.running) {
                 const game = LGame.new(dGame);
-                ReduxAction.addFIX(game.raw).then((dict) => {
-                    Action.ADD(dict.obj, Action.Redux);
-                });
+                Action.ADD(game.raw, Action.Redux);
                 const dPlayer: DPlayer = {name: user.name, sign: U.retrieveSign(user.id)};
                 const player = LPlayer.new(dPlayer);
                 Action.ADD(player.raw, Action.Mixin);
                 game.running = true; game.playerTwo = player;
                 user.role = 'playerTwo';
-                U.goto(router, 'game');
+                U.sleep(1).then(() => U.goto(router, 'game'));
             } else alert('game is running');
         } else alert('invalid gameID');
     }

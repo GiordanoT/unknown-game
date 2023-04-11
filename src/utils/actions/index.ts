@@ -34,19 +34,19 @@ export class Action {
 }
 
 export class MixinAction {
-    static add(obj: DObject): void {
+    static async add(obj: DObject): Promise<void> {
         ReduxAction.add(obj);
-        FirebaseAction.add(obj);
+        await FirebaseAction.add(obj);
     }
 
-    static remove(obj: DObject): void {
+    static async remove(obj: DObject): Promise<void> {
         ReduxAction.remove(obj);
-        FirebaseAction.remove(obj);
+        await FirebaseAction.remove(obj);
     }
 
-    static edit<T extends DPointer>(obj: T, field: keyof T, value: Value): void {
+    static async edit<T extends DPointer>(obj: T, field: keyof T, value: Value): Promise<void> {
         ReduxAction.edit(obj, field, value);
-        FirebaseAction.edit(obj, field, value);
+        await FirebaseAction.edit(obj, field, value);
     }
 }
 
