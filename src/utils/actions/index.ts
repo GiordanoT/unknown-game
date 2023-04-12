@@ -11,24 +11,24 @@ export class Action {
     static ADD(obj: DObject, layer: number): void {
         switch(layer) {
             case 0: ReduxAction.add(obj); break;
-            case 1: FirebaseAction.add(obj); break;
-            default: MixinAction.add(obj); break;
+            case 1: FirebaseAction.add(obj).then(); break;
+            default: MixinAction.add(obj).then(); break;
         }
     }
 
     static REMOVE(obj: DObject, layer: number): void {
         switch(layer) {
             case 0: ReduxAction.remove(obj); break;
-            case 1: FirebaseAction.remove(obj); break;
-            default: MixinAction.remove(obj); break;
+            case 1: FirebaseAction.remove(obj).then(); break;
+            default: MixinAction.remove(obj).then(); break;
         }
     }
 
     static EDIT<T extends DPointer>(obj: T, field: keyof T, value: Value, layer: number): void {
         switch(layer) {
             case 0: ReduxAction.edit(obj, field, value); break;
-            case 1: FirebaseAction.edit(obj, field, value); break;
-            default: MixinAction.edit<T>(obj, field, value); break;
+            case 1: FirebaseAction.edit(obj, field, value).then(); break;
+            default: MixinAction.edit<T>(obj, field, value).then(); break;
         }
     }
 }

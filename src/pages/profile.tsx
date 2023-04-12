@@ -1,28 +1,24 @@
-import Head from 'next/head';
-import React, {useEffect, useState} from "react";
-import {RootState, store} from "@/redux";
-import {useEffectOnce} from "usehooks-ts";
+import React, {useState} from "react";
+import {RootState} from "@/redux";
 import Profile from "@/components/profile";
 import Loading from "@/components/common/Loading";
-import {U} from "@/utils/functions";
-import {useRouter} from "next/router";
 import {useSelector} from "react-redux";
+import Auth from "@/components/auth";
+import {useEffectOnce} from "usehooks-ts";
+import {U} from "@/utils/functions";
 
 export default function HomePage() {
-    const router = useRouter();
-    const [isLoading, setLoading] = useState(true);
+    const isLoading= useSelector((state: RootState) => state.utility).loading;
+    const [loading, setLoading] = useState(true);
     const userID = useSelector((state: RootState) => state.user).pointer;
 
-    useEffectOnce(() => {
-        U.sleep(1).then(() => {setLoading(false)});
-    });
-
-    useEffect(() => {
-        if(!userID) U.goto(router, 'auth')
-    }, [router, userID]);
+    useEffectOnce(() => {U.sleep(1).then(() => setLoading(false))});
 
     return (<>
-        <Head><title>Profile</title></Head>
-        {(!isLoading && userID) ? <Profile userID={userID} /> : <Loading />}
+        {
+            (isLoading || loading) ? <Loading /> :
+                (!userID) ? <Auth /> :
+                    <Profile userID={userID} />
+        }
     </>);
 }

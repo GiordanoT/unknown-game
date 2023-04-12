@@ -1,4 +1,3 @@
-import Head from 'next/head';
 import React, {useEffect, useState} from "react";
 import {useSelector} from "react-redux";
 import {RootState} from "@/redux";
@@ -12,19 +11,20 @@ import {CONSTRAINT} from "@/utils/type";
 import {DPlayer} from "@/data/Player";
 import {FirebaseAction} from "@/firebase/actions";
 import {Action} from "@/utils/actions";
+import Auth from "@/components/auth";
+import Game from "@/components/game";
 
 export default function HomePage() {
     const router = useRouter();
-    const [isLoading, setLoading] = useState(true);
+    const isLoading= useSelector((state: RootState) => state.utility).loading;
+    const [loading, setLoading] = useState(true);
     const userID = useSelector((state: RootState) => state.user).pointer;
+    const gameID = useSelector((state: RootState) => state.game).pointer;
 
-    useEffectOnce(() => {
-        U.sleep(1).then(() => {setLoading(false)});
-    });
+    useEffectOnce(() => {U.sleep(2).then(() => setLoading(false))});
 
     useEffect(() => {
-        if(!userID) U.goto(router, 'auth');
-        else {
+        if(userID) {
             const sign = U.retrieveSign(userID);
             const constraint: CONSTRAINT<DPlayer> = {field: 'sign', operator: '==', value: sign};
             FirebaseAction.select<DPlayer>('players', constraint).then((players) => {
@@ -38,7 +38,6 @@ export default function HomePage() {
                             if(games.length > 0) {
                                 const dGame = games[0];
                                 Action.ADD(dGame, Action.Redux);
-                                U.sleep(1).then(() => U.goto(router, 'game'));
                             }
                         });
                     }
@@ -49,7 +48,11 @@ export default function HomePage() {
 
 
     return (<>
-        <Head><title>Home</title></Head>
-        {(!isLoading && userID) ? <Home userID={userID} /> : <Loading />}
+        {
+            (isLoading || loading) ? <Loading /> :
+                (!userID) ? <Auth /> :
+                    (gameID) ? <Game userID={userID} gameID={gameID} /> :
+                        <Home userID={userID} />
+        }
     </>);
 }

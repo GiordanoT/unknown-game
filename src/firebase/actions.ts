@@ -127,7 +127,6 @@ export class FirebaseAction {
 
     static async logout(): Promise<void> {
         await signOut(auth);
-        ReduxAction.reset();
     }
 
 }

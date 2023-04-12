@@ -1,20 +1,16 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {RootState} from '@/redux';
 import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
 import {DGame, LGame, PGame} from "@/data/Game";
-import {Action, MixinAction} from "@/utils/actions";
+import {MixinAction} from "@/utils/actions";
 import Navbar from "@/components/common/Navbar";
 import {Pointer} from "@/utils/type";
 import {DUser, LUser, PUser} from "@/data/User";
-import {useRouter} from "next/router";
-import {U} from "@/utils/functions";
 import {FirebaseAction} from "@/firebase/actions";
 import {useEffectOnce} from "usehooks-ts";
-import {ReduxAction} from "@/redux/actions";
 
 function GameComponent(props: AllProps) {
-    const router = useRouter();
     const user = props.user;
     const game = props.game;
 
@@ -32,7 +28,7 @@ function GameComponent(props: AllProps) {
         <div><b>CODE:</b>{game.code}</div>
         <div><b>P1:</b>{game.playerOne?.name}</div>
         <div><b>P2:</b>{game.playerTwo?.name}</div>
-        <button className={'btn btn-danger'} onClick={end}>END</button>
+        <button className={'btn btn-danger'} onClick={end}>BRUTAL DELETE</button>
     </div>);
 
 

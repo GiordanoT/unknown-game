@@ -7,6 +7,7 @@ export function StateViewerComponent(props: AllProps) {
     return(<div className={'mt-5'}>
         <hr />
         <label className={'d-block text-center'}>
+            <b>utility</b>: {JSON.stringify(props.state.utility)} <br />
             <b>user</b>: {JSON.stringify(props.state.user)} <br />
             <b>players</b>: {JSON.stringify(props.state.players)} <br />
             <b>game</b>: {JSON.stringify(props.state.game)} <br />

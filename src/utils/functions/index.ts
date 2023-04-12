@@ -10,6 +10,8 @@ import {gameSlice} from "@/redux/store/game";
 import {NextRouter} from "next/router";
 import {playerSlice} from "@/redux/store/player";
 import {LPlayer} from "@/data/Player";
+import {store} from "@/redux";
+import {utilitySlice} from "@/redux/store/utility";
 
 export class U {
 
@@ -93,8 +95,18 @@ export class U {
         } return '';
     }
 
-    public static goto(router: NextRouter, path: string): void {
-        router.push('/' + path).then()
+
+    static async goto(router: NextRouter, path: string, delay: number = 0): Promise<void> {
+        store.dispatch(utilitySlice.actions.loadingStart());
+        await U.sleep(delay)
+        await router.push('/' + path);
+        store.dispatch(utilitySlice.actions.loadingEnd());
+    }
+
+    static async loading(seconds: number): Promise<void> {
+        store.dispatch(utilitySlice.actions.loadingStart());
+        await U.sleep(seconds);
+        store.dispatch(utilitySlice.actions.loadingEnd());
     }
 
 }

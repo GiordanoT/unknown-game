@@ -5,8 +5,10 @@ import {userReducer} from "@/redux/store/user";
 import {objectReducer} from "@/redux/store/object";
 import {gameReducer} from "@/redux/store/game";
 import {playerReducer} from "@/redux/store/player";
+import {utilityReducer} from "@/redux/store/utility";
 
 export const rootReducer = combineReducers({
+    utility: utilityReducer,
     objects: objectReducer,
     lobbies: lobbyReducer,
     user: userReducer,

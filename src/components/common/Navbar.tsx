@@ -7,22 +7,22 @@ import {useRouter} from "next/router";
 import {DUser, LUser, PUser} from "@/data/User";
 import {Pointer} from "@/utils/type";
 import {U} from "@/utils/functions";
+import {ReduxAction} from "@/redux/actions";
 
 export function NavbarComponent(props: AllProps) {
     const user = props.user;
     const router = useRouter();
 
     const logout = async() => {
-        goto('auth');
-        await U.sleep(1);
         await FirebaseAction.logout();
+        await U.goto(router, '/auth');
+        ReduxAction.reset();
     }
-    const goto = (link: string) => {router.push('/' + link).then()}
     const debug = () => {console.log(store.getState())}
 
     return(<nav className={'w-100 bg-dark p-2 d-flex'}>
-        <button onClick={() => goto('')} className={'btn btn-primary'}>Home</button>
-        <button onClick={() => goto('profile')} className={'btn btn-primary ms-2'}>Profile</button>
+        <button onClick={async() => await U.goto(router, '')} className={'btn btn-primary'}>Home</button>
+        <button onClick={async() => await U.goto(router, 'profile')} className={'btn btn-primary ms-2'}>Profile</button>
         <button onClick={debug} className={'btn btn-warning ms-2'}>DEBUG</button>
         <div className={'ms-auto'}>
             <label className={'text-white my-auto me-3'}>{user.name}</label>

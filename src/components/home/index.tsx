@@ -18,7 +18,7 @@ function HomeComponent(props: AllProps) {
     const game = props.game;
     const [gameCode, setGameCode] = useState('');
 
-    const create = () => {
+    const create = async() => {
         const dPlayer: DPlayer = {name: user.name, sign: U.retrieveSign(user.id)};
         const player = LPlayer.new(dPlayer);
         Action.ADD(player.raw, Action.Mixin);
@@ -32,7 +32,7 @@ function HomeComponent(props: AllProps) {
         const pGame = LGame.new(dGame);
         Action.ADD(pGame.raw, Action.Mixin);
         user.role = 'playerOne';
-        U.sleep(1).then(() => U.goto(router, 'game'));
+        await U.goto(router, 'game', 0);
     }
 
     const join = async() => {
@@ -48,7 +48,7 @@ function HomeComponent(props: AllProps) {
                 Action.ADD(player.raw, Action.Mixin);
                 game.running = true; game.playerTwo = player;
                 user.role = 'playerTwo';
-                U.sleep(1).then(() => U.goto(router, 'game'));
+                await U.goto(router, 'game');
             } else alert('game is running');
         } else alert('invalid gameID');
     }

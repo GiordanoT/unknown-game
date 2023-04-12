@@ -4,6 +4,7 @@ import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
 import {FirebaseAction} from "@/firebase/actions";
 import {useRouter} from "next/router";
+import {U} from "@/utils/functions";
 
 function AuthComponent(props: AllProps) {
     const [email, setEmail] = useState('');
@@ -11,17 +12,16 @@ function AuthComponent(props: AllProps) {
     const [error, setError] = useState(false);
     const router = useRouter();
 
-    const signin = (evt: React.MouseEvent<HTMLButtonElement>) => {
-        FirebaseAction.signin(email, password).then((result) => {setError(!result)});
+    const signin = async() => {
+        const result = await FirebaseAction.signin(email, password);
+        setError(!result);
+        if(result) await U.goto(router, '');
     }
-    const login = (evt: React.MouseEvent<HTMLButtonElement>) => {
-        FirebaseAction.login(email, password).then((result) => {
-            setError(!result);
-            if(result) goto('');
-        });
+    const login = async() => {
+        const result = await FirebaseAction.login(email, password);
+        setError(!result);
+        if(result) await U.goto(router, '');
     }
-    const goto = (link: string) => {router.push('/' + link).then()}
-
 
     return(<div className={'mx-auto card shadow mt-4'}>
         <label className={'d-block'}><b>AUTH</b></label>
@@ -35,7 +35,6 @@ function AuthComponent(props: AllProps) {
             <button className={'d-block btn btn-primary'} onClick={login}>Login</button>
             <button className={'d-block btn btn-primary ms-auto'} onClick={signin} disabled={true}>Signin</button>
         </div>
-
     </div>);
 }
 

@@ -9,6 +9,8 @@ import {DUser} from "@/data/User";
 import {CONSTRAINT} from "@/utils/type";
 import {Action} from "@/utils/actions";
 import StateViewer from "@/components/common/StateViewer";
+import Head from "next/head";
+import React from "react";
 
 export default function App({ Component, pageProps }: AppProps) {
 
@@ -21,6 +23,7 @@ export default function App({ Component, pageProps }: AppProps) {
   });
 
   return(<Provider store={store}>
+    <Head><title>Unknown Game</title></Head>
     <Component {...pageProps} />
     <StateViewer />
   </Provider>);

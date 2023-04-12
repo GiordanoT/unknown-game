@@ -1,31 +1,31 @@
 import Head from 'next/head';
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {useSelector} from "react-redux";
 import {RootState} from "@/redux";
-import {useEffectOnce} from "usehooks-ts";
 import Loading from "@/components/common/Loading";
-import {U} from "@/utils/functions";
 import Game from "@/components/game";
-import {useRouter} from "next/router";
+import Auth from "@/components/auth";
+import {useEffectOnce} from "usehooks-ts";
+import {U} from "@/utils/functions";
+import Home from "@/components/home";
 
 export default function HomePage() {
-    const router = useRouter();
-    const [isLoading, setLoading] = useState(true);
+    const isLoading= useSelector((state: RootState) => state.utility).loading;
+    const [loading, setLoading] = useState(true);
     const userID = useSelector((state: RootState) => state.user).pointer;
     const gameID = useSelector((state: RootState) => state.game).pointer;
 
     useEffectOnce(() => {
-        U.sleep(1).then(() => {setLoading(false)});
+        U.sleep(1).then(() => setLoading(false));
     });
 
-    useEffect(() => {
-        if(!userID) U.goto(router, 'auth');
-        if(!gameID) U.goto(router, '');
-    }, [router, userID, gameID]);
-
-
     return (<>
-        <Head><title>Game</title></Head>
-        {(!isLoading && userID) ? <Game userID={userID} gameID={gameID} /> : <Loading />}
+        <Head><title>Unknown Game</title></Head>
+        {
+            (isLoading || loading) ? <Loading /> :
+                (!userID) ? <Auth /> :
+                    (!gameID) ? <Home userID={userID} /> :
+                        <Game userID={userID} gameID={gameID} />
+        }
     </>);
 }

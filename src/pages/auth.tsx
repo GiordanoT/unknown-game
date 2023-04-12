@@ -1,29 +1,26 @@
 import Head from 'next/head';
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import Auth from "@/components/auth";
-import {useEffectOnce} from "usehooks-ts";
 import Loading from "@/components/common/Loading";
-import {U} from "@/utils/functions";
-import {useRouter} from "next/router";
-import {RootState, store} from "@/redux";
+import {RootState} from "@/redux";
 import {useSelector} from "react-redux";
+import Home from "@/components/home";
+import {useEffectOnce} from "usehooks-ts";
+import {U} from "@/utils/functions";
 
 export default function AuthPage() {
-    const router = useRouter();
-    const [isLoading, setLoading] = useState(true);
+    const isLoading= useSelector((state: RootState) => state.utility).loading;
+    const [loading, setLoading] = useState(true);
     const userID = useSelector((state: RootState) => state.user).pointer;
 
-    useEffectOnce(() => {
-        U.sleep(1).then(() => {setLoading(false)});
-    });
-
-    useEffect(() => {
-        if(userID) U.goto(router, '');
-    }, [router, userID]);
+    useEffectOnce(() => {U.sleep(1).then(() => setLoading(false))});
 
     return(<>
-        <Head><title>Auth</title></Head>
-        {(!isLoading && !userID) ? <Auth /> : <Loading />}
+        {
+            (isLoading || loading) ? <Loading /> :
+                (userID) ? <Home userID={userID} /> :
+                    <Auth />
+        }
     </>);
 
 }
