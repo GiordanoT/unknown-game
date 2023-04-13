@@ -28,7 +28,8 @@ function HomeComponent(props: AllProps) {
             playerOne: player.id,
             playerTwo: null,
             running: false,
-            eliminable: false
+            eliminable: false,
+            winner: null
         };
         const pGame = LGame.new(dGame);
         await MixinAction.add(pGame.raw);

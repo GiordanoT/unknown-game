@@ -95,11 +95,15 @@ export class U {
         } return '';
     }
 
-
     static async goto(router: NextRouter, path: string, delay: number = 0): Promise<void> {
         store.dispatch(utilitySlice.actions.loadingStart());
         await U.sleep(delay)
         await router.push('/' + path);
         store.dispatch(utilitySlice.actions.loadingEnd());
+    }
+
+    static opponentRole(role: string): 'playerOne'|'playerTwo' {
+        if(role === 'playerOne') return 'playerTwo';
+        else return 'playerOne';
     }
 }

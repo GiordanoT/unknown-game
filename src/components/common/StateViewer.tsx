@@ -5,7 +5,6 @@ import {connect} from 'react-redux';
 
 export function StateViewerComponent(props: AllProps) {
     return(<div className={'mt-5'}>
-        <hr />
         <label className={'d-block text-center'}>
             <b>utility</b>: {JSON.stringify(props.state.utility)} <br />
             <b>user</b>: {JSON.stringify(props.state.user)} <br />

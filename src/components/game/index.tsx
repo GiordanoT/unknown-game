@@ -3,43 +3,26 @@ import {RootState} from '@/redux';
 import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
 import {DGame, LGame, PGame} from "@/data/Game";
-import Navbar from "@/components/common/Navbar";
 import {Pointer} from "@/utils/type";
 import {DUser, LUser, PUser} from "@/data/User";
 import {FirebaseAction} from "@/firebase/actions";
 import {useEffectOnce} from "usehooks-ts";
-import {ReduxUtilityAction} from "@/redux/actions/utility";
-import {U} from "@/utils/functions";
+import GameInfo from "@/components/game/GameInfo";
+import GameBar from "@/components/game/GameBar";
 
 function GameComponent(props: AllProps) {
     const user = props.user;
     const game = props.game;
 
-    useEffectOnce(() => {FirebaseAction.load('games', LGame.name, game.id).then();});
-
-    const end = async() => {
-        ReduxUtilityAction.setLoading(true);
-        ReduxUtilityAction.setFirebaseListener(false);
-        const player = game[user.role]; if(player) player.sign = '';
-        if(!game.eliminable) {
-            game.eliminable = true;
-            await U.sleep(1);
-        }
-        else {
-            if(game.playerOne) await FirebaseAction.remove(game.playerOne.raw);
-            if(game.playerTwo) await FirebaseAction.remove(game.playerTwo.raw);
-            await FirebaseAction.remove(game.raw);
-        }
-        window.location.reload();
-    }
+    useEffectOnce(() => {
+        FirebaseAction.load('games', LGame.name, game.id).then();
+    });
 
     return(<div>
-        <Navbar userID={user.id} />
-        <div><b>CODE:</b>{game.code}</div>
-        <div><b>P1:</b>{game.playerOne?.name}</div>
-        <div><b>P2:</b>{game.playerTwo?.name}</div>
-        <div><b>Eliminable:</b>{String(game.eliminable)}</div>
-        <button className={'btn btn-danger'} onClick={end}>end</button>
+        <GameInfo user={user} game={game} />
+        <GameBar user={user} player={game.playerOne} game={game} />
+        <GameBar user={user} player={game.playerTwo} game={game} />
+        {game.winner?.name}
     </div>);
 
 

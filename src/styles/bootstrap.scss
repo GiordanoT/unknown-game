@@ -1,5 +1,4 @@
 @import 'node_modules/bootstrap/dist/css/bootstrap.min.css';
-@import 'node_modules/bootstrap-icons/font/bootstrap-icons.css';
 @import 'variables';
 
 .input {
@@ -20,4 +19,12 @@
   line-height: normal;
   border-radius: $radius;
   font-size: 0.95em;
+}
+
+.cursor-text {
+  cursor: text;
+}
+
+.cursor-default {
+  cursor: default;
 }

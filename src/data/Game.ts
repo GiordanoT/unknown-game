@@ -12,6 +12,7 @@ export interface DGame extends DPointer {
     playerTwo: null|Pointer<DPlayer>;
     running: boolean;
     eliminable: boolean;
+    winner: null|Pointer<DPlayer>;
 }
 
 export class LGame extends LPointer implements DGame {
@@ -21,6 +22,7 @@ export class LGame extends LPointer implements DGame {
     playerTwo: null|Pointer<DPlayer>;
     running: boolean;
     eliminable: boolean;
+    winner: null|Pointer<DPlayer>;
     raw!: DGame;
 
     protected constructor(game: DGame) {
@@ -31,6 +33,7 @@ export class LGame extends LPointer implements DGame {
         this.playerTwo = game.playerTwo;
         this.running = game.running;
         this.eliminable = game.eliminable;
+        this.winner = game.winner
     }
     static new(game: DGame): PGame {
         const obj = new LGame(game);
@@ -79,6 +82,15 @@ export class LGame extends LPointer implements DGame {
         Action.EDIT<DGame>(this.getRaw(), 'eliminable', value, Action.Firebase);
     }
 
+    getWinner(): null|PPlayer {
+        if(this.winner) return LPlayer.fromPointer(this.winner);
+        else return null;
+    }
+    setWinner(value: PPlayer): void {
+        this.winner = value.id;
+        Action.EDIT<DGame>(this.getRaw(), 'winner', value.id, Action.Firebase);
+    }
+
 }
 
 export interface PGame extends PPointer {
@@ -87,4 +99,5 @@ export interface PGame extends PPointer {
     playerTwo: null|PPlayer;
     running: boolean;
     eliminable: boolean;
+    winner: null|PPlayer;
 }

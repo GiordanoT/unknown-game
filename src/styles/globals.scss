@@ -1,6 +1,7 @@
 @import 'variables';
 @import 'bootstrap';
 @import 'navbar';
+@import 'game';
 
 html, body {
   background-color: whitesmoke;
@@ -31,4 +32,15 @@ label {
   border-radius: $radius;
   border: 1px solid rgba(0, 0, 0, 0.2);
   display: block;
+}
+
+.widget {
+  padding: 0.5rem 1rem;
+  background-color: white;
+  width:  auto; height: min-content;
+  border-radius: $radius;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  display: block;
+  position: absolute;
+  z-index: 1;
 }
