@@ -21,6 +21,8 @@ import {ReduxAction} from "@/redux/actions";
 import {U} from "@/utils/functions";
 import {DPointer} from "@/data/Pointer";
 import {DUser, LUser} from "@/data/User";
+import {onValue, ref} from "@firebase/database";
+import {store} from "@/redux";
 
 export class FirebaseAction {
 
@@ -58,7 +60,7 @@ export class FirebaseAction {
         return objects
     }
 
-    static async load(collectionName: string, className: string, id?: Pointer): Promise<void> {
+    static async load(collectionName: string, className: string, id?: Pointer): Promise<any> {
         if(id) await FirebaseAction._loadDocument(collectionName, id, className);
         else await FirebaseAction._loadCollection(collectionName, className);
     }
@@ -66,8 +68,11 @@ export class FirebaseAction {
     private static async _loadDocument(collectionName: string, id: Pointer, className: string): Promise<void> {
         const DOC = doc(db, collectionName, id);
         onSnapshot(DOC, (result) => {
-            const objects = [{...result.data()} as DObject];
-            ReduxAction.load(objects, className);
+            const firebaseListener = store.getState().utility.firebaseListener;
+            if(firebaseListener) {
+                const objects = [{...result.data()} as DObject];
+                ReduxAction.load(objects, className);
+            }
         });
     }
 
@@ -110,7 +115,7 @@ export class FirebaseAction {
             const name = 'USER' + Date.now();
             const dUser: DUser = {name, email, role: 'playerOne'};
             const user = LUser.new(dUser);
-            MixinAction.add(user.raw);
+            await MixinAction.add(user.raw);
             return true;
         } catch (error) {return false;}
     }

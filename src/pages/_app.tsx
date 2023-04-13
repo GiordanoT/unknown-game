@@ -1,7 +1,7 @@
 import '@/styles/globals.scss';
 import type {AppProps} from 'next/app';
-import {Provider, useSelector} from 'react-redux';
-import {RootState, store} from '@/redux';
+import {Provider} from 'react-redux';
+import {store} from '@/redux';
 import {onAuthStateChanged} from "@firebase/auth";
 import {auth} from "@/firebase";
 import {FirebaseAction} from "@/firebase/actions";

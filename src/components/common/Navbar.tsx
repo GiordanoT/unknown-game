@@ -8,16 +8,20 @@ import {DUser, LUser, PUser} from "@/data/User";
 import {Pointer} from "@/utils/type";
 import {U} from "@/utils/functions";
 import {ReduxAction} from "@/redux/actions";
+import {ReduxUtilityAction} from "@/redux/actions/utility";
 
 export function NavbarComponent(props: AllProps) {
     const user = props.user;
     const router = useRouter();
 
     const logout = async() => {
-        await FirebaseAction.logout();
-        await U.goto(router, '/auth');
-        ReduxAction.reset();
+        ReduxUtilityAction.setLoading(true);
+        FirebaseAction.logout().then(() => {
+            ReduxAction.reset();
+            ReduxUtilityAction.setLoading(false);
+        })
     }
+
     const debug = () => {console.log(store.getState())}
 
     return(<nav className={'w-100 bg-dark p-2 d-flex'}>

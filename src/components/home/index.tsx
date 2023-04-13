@@ -6,22 +6,23 @@ import Navbar from "@/components/common/Navbar";
 import {DUser, LUser, PUser} from "@/data/User";
 import {CONSTRAINT, Pointer} from "@/utils/type";
 import {DGame, LGame, PGame} from "@/data/Game";
-import {Action} from "@/utils/actions";
+import {MixinAction} from "@/utils/actions";
 import {FirebaseAction} from "@/firebase/actions";
 import {U} from "@/utils/functions";
 import {DPlayer, LPlayer} from "@/data/Player";
-import {useRouter} from "next/router";
+import {ReduxUtilityAction} from "@/redux/actions/utility";
+import {ReduxAction} from "@/redux/actions";
 
 function HomeComponent(props: AllProps) {
-    const router = useRouter();
     const user = props.user;
     const game = props.game;
     const [gameCode, setGameCode] = useState('');
 
     const create = async() => {
+        ReduxUtilityAction.setLoading(true);
         const dPlayer: DPlayer = {name: user.name, sign: U.retrieveSign(user.id)};
         const player = LPlayer.new(dPlayer);
-        Action.ADD(player.raw, Action.Mixin);
+        await MixinAction.add(player.raw);
         const dGame: DGame = {
             code: U.getRandomString(5),
             playerOne: player.id,
@@ -30,25 +31,26 @@ function HomeComponent(props: AllProps) {
             eliminable: false
         };
         const pGame = LGame.new(dGame);
-        Action.ADD(pGame.raw, Action.Mixin);
+        await MixinAction.add(pGame.raw);
         user.role = 'playerOne';
-        await U.goto(router, 'game', 0);
+        ReduxUtilityAction.setLoading(false);
     }
 
     const join = async() => {
+        ReduxUtilityAction.setLoading(true);
         const constraint: CONSTRAINT<DGame> = {field: 'code', operator: '==', value: gameCode};
         const games = await FirebaseAction.select<DGame>('games', constraint);
         if(games.length > 0) {
             const dGame = games[0];
             if(!dGame.running) {
                 const game = LGame.new(dGame);
-                Action.ADD(game.raw, Action.Redux);
+                ReduxAction.add(game.raw);
                 const dPlayer: DPlayer = {name: user.name, sign: U.retrieveSign(user.id)};
                 const player = LPlayer.new(dPlayer);
-                Action.ADD(player.raw, Action.Mixin);
+                await MixinAction.add(player.raw);
                 game.running = true; game.playerTwo = player;
                 user.role = 'playerTwo';
-                await U.goto(router, 'game');
+                ReduxUtilityAction.setLoading(false);
             } else alert('game is running');
         } else alert('invalid gameID');
     }

@@ -10,9 +10,9 @@ import {DGame} from "@/data/Game";
 import {CONSTRAINT} from "@/utils/type";
 import {DPlayer} from "@/data/Player";
 import {FirebaseAction} from "@/firebase/actions";
-import {Action} from "@/utils/actions";
 import Auth from "@/components/auth";
 import Game from "@/components/game";
+import {ReduxAction} from "@/redux/actions";
 
 export default function HomePage() {
     const router = useRouter();
@@ -37,7 +37,7 @@ export default function HomePage() {
                         FirebaseAction.select('games', constraints, false).then((games) => {
                             if(games.length > 0) {
                                 const dGame = games[0];
-                                Action.ADD(dGame, Action.Redux);
+                                ReduxAction.add(dGame);
                             }
                         });
                     }

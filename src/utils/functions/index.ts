@@ -15,7 +15,7 @@ import {utilitySlice} from "@/redux/store/utility";
 
 export class U {
 
-    public static getSlice(obj: DObject, field: string = ''): null|Slice {
+    public static getSlice(obj: DObject): null|Slice {
         switch(obj.classname) {
             case LLobby.name: return lobbySlice;
             case LUser.name: return userSlice;
@@ -102,11 +102,4 @@ export class U {
         await router.push('/' + path);
         store.dispatch(utilitySlice.actions.loadingEnd());
     }
-
-    static async loading(seconds: number): Promise<void> {
-        store.dispatch(utilitySlice.actions.loadingStart());
-        await U.sleep(seconds);
-        store.dispatch(utilitySlice.actions.loadingEnd());
-    }
-
 }

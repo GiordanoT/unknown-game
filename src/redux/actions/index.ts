@@ -2,7 +2,7 @@ import {store} from "@/redux";
 import {CONSTRAINT, DObject, Value} from "@/utils/type";
 import {objectSlice} from "@/redux/store/object";
 import {U} from "@/utils/functions";
-import {ReduxRawAction} from "@/redux/actions/raw";
+import {ReduxPointerAction} from "@/redux/actions/pointer";
 import {DPointer} from "@/data/Pointer";
 import {FirebaseAction} from "@/firebase/actions";
 
@@ -19,7 +19,9 @@ export class ReduxAction {
         }
         for(let newObject of newObjects) {
             const oldObject = oldObjects.find((obj) => {return obj.id === newObject.id});
-            if(!oldObject) ReduxAction.add(dict.obj);
+            if(!oldObject) {
+                ReduxAction.add(dict.obj);
+            }
             else U.delta(oldObject, newObject);
         }
     }
@@ -29,13 +31,13 @@ export class ReduxAction {
             store.dispatch(objectSlice.actions.add(dict.obj));
             U.log(`ADD ${obj.classname}`, dict.obj);
             const slice = U.getSlice(dict.obj);
-            if(slice) ReduxRawAction.add(slice, dict.obj);
+            if(slice) ReduxPointerAction.add(slice, dict.obj);
         });
     }
 
     static remove(obj: DObject): void {
         const slice = U.getSlice(obj);
-        if(slice) ReduxRawAction.remove(slice, obj);
+        if(slice) ReduxPointerAction.remove(slice, obj);
         store.dispatch(objectSlice.actions.remove(obj));
         U.log(`REMOVE ${obj.classname}`, obj);
     }
