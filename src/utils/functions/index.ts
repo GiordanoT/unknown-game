@@ -5,7 +5,7 @@ import {lobbySlice} from "@/redux/store/lobby";
 import {userSlice} from "@/redux/store/user";
 import {LLobby} from "@/data/Lobby";
 import {LUser} from "@/data/User";
-import {LGame} from "@/data/Game";
+import {LGame, PGame} from "@/data/Game";
 import {gameSlice} from "@/redux/store/game";
 import {NextRouter} from "next/router";
 import {playerSlice} from "@/redux/store/player";
@@ -16,6 +16,8 @@ import {cardSlice} from "@/redux/store/card";
 import {LCard} from "@/data/Card";
 import {LDeck} from "@/data/Deck";
 import {deckSlice} from "@/redux/store/deck";
+import {LGameCard} from "@/data/GameCard";
+import {LGameDeck} from "@/data/GameDeck";
 
 export class U {
 
@@ -44,6 +46,8 @@ export class U {
             case LGame.name: return 'games';
             case LCard.name: return 'cards';
             case LDeck.name: return 'decks';
+            case LGameCard.name: return store.getState().utility.gameCode + '_cards';
+            case LGameDeck.name: return store.getState().utility.gameCode + '_decks';
             default: return null;
         }
     }
@@ -53,7 +57,9 @@ export class U {
             case 'playerOne': return 'players';
             case 'playerTwo': return 'players';
             case 'cards': return 'cards';
+            case 'gameCards': return store.getState().utility.gameCode + '_cards';
             case 'deck': return 'decks';
+            case 'gameDeck': return store.getState().utility.gameCode + '_decks';
             default: return null;
         }
     }

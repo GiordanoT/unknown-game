@@ -55,25 +55,29 @@ export class ReduxAction {
         for(let pointer in objects) ReduxAction.remove(objects[pointer]);
     }
 
-    private static async editFIX(obj: DObject, field: string, value: Value): Promise<{obj: DObject, field: keyof DObject, value: Value}> {
+    private static async editFIX(obj: DObject, field: string, _values: Value): Promise<{obj: DObject, field: keyof DObject, value: Value}> {
         const excludedFields = ['id'];
-        if(!excludedFields.includes(field) && typeof value === 'string' && U.isPointer(value)) {
-            const pointer = value;
-            const objects = store.getState().objects;
-            const object: DObject|undefined = objects[pointer];
-            if(!object) {
-                const collection = U.getCollection(field);
-                const constraint: CONSTRAINT<DObject> = {field: 'id', operator: '==', value: pointer}
-                if(collection) {
-                    const results = await FirebaseAction.select<DObject>(collection, constraint)
-                    if(results.length > 0) {
-                        const result = results[0];
-                        ReduxAction.add(result);
+        let values = _values as Value;
+        values = (Array.isArray(values)) ? values : [values];
+        for(let value of values) {
+            if (!excludedFields.includes(field) && typeof value === 'string' && U.isPointer(value)) {
+                const pointer = value;
+                const objects = store.getState().objects;
+                const object: DObject | undefined = objects[pointer];
+                if (!object) {
+                    const collection = U.getCollection(field);
+                    const constraint: CONSTRAINT<DObject> = {field: 'id', operator: '==', value: pointer}
+                    if (collection) {
+                        const results = await FirebaseAction.select<DObject>(collection, constraint)
+                        if (results.length > 0) {
+                            const result = results[0];
+                            ReduxAction.add(result);
+                        }
                     }
                 }
             }
         }
-        return {obj, field: field as keyof DObject, value};
+        return {obj, field: field as keyof DObject, value: _values};
     }
 
     private static async addFIX(obj: DObject): Promise<{obj: DObject}> {

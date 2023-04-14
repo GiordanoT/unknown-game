@@ -13,6 +13,7 @@ import {FirebaseAction} from "@/firebase/actions";
 import Auth from "@/components/auth";
 import Game from "@/components/game";
 import {ReduxAction} from "@/redux/actions";
+import {ReduxUtilityAction} from "@/redux/actions/utility";
 
 export default function HomePage() {
     const router = useRouter();
@@ -37,6 +38,7 @@ export default function HomePage() {
                         FirebaseAction.select('games', constraints, false).then((games) => {
                             if(games.length > 0) {
                                 const dGame = games[0];
+                                ReduxUtilityAction.setGameCode(dGame.code);
                                 ReduxAction.add(dGame);
                             }
                         });

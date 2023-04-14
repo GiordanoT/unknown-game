@@ -10,5 +10,8 @@ export class ReduxUtilityAction {
         if(value) store.dispatch(utilitySlice.actions.firebaseLoad());
         else store.dispatch(utilitySlice.actions.firebaseUnload());
     }
+    static setGameCode(value: string): void {
+        store.dispatch(utilitySlice.actions.setGameCode(value));
+    }
 }
 

@@ -12,6 +12,8 @@ import {U} from "@/utils/functions";
 import {DPlayer, LPlayer} from "@/data/Player";
 import {ReduxUtilityAction} from "@/redux/actions/utility";
 import {ReduxAction} from "@/redux/actions";
+import {DGameCard, LGameCard, PGameCard} from "@/data/GameCard";
+import {DGameDeck, LGameDeck, PGameDeck} from "@/data/GameDeck";
 
 function HomeComponent(props: AllProps) {
     const user = props.user;
@@ -20,12 +22,9 @@ function HomeComponent(props: AllProps) {
 
     const create = async() => {
         ReduxUtilityAction.setLoading(true);
-        const dPlayer: DPlayer = {name: user.name, sign: U.retrieveSign(user.id)};
-        const player = LPlayer.new(dPlayer);
-        await MixinAction.add(player.raw);
         const dGame: DGame = {
             code: U.getRandomString(5),
-            playerOne: player.id,
+            playerOne: null,
             playerTwo: null,
             running: false,
             eliminable: false,
@@ -33,6 +32,31 @@ function HomeComponent(props: AllProps) {
         };
         const pGame = LGame.new(dGame);
         await MixinAction.add(pGame.raw);
+        ReduxUtilityAction.setGameCode(dGame.code);
+        const gameCards: PGameCard[] = [];
+        for(let card of user.deck.cards) {
+            const dGameCard: DGameCard = {
+                name: card.name,
+                image: card.image
+            };
+            const gameCard = LGameCard.new(dGameCard);
+            await MixinAction.add(gameCard.raw);
+            gameCards.push(gameCard);
+        }
+        const dGameDeck: DGameDeck = {
+            name: user.deck.name,
+            gameCards: gameCards.map((gameCard) => {return gameCard.id})
+        }
+        const gameDeck = LGameDeck.new(dGameDeck);
+        await MixinAction.add(gameDeck.raw);
+        const dPlayer: DPlayer = {
+            name: user.name,
+            sign: U.retrieveSign(user.id),
+            gameDeck: gameDeck.id
+        };
+        const player = LPlayer.new(dPlayer);
+        await MixinAction.add(player.raw);
+        pGame.playerOne = player;
         user.role = 'playerOne';
         ReduxUtilityAction.setLoading(false);
     }
@@ -44,9 +68,30 @@ function HomeComponent(props: AllProps) {
         if(games.length > 0) {
             const dGame = games[0];
             if(!dGame.running) {
+                ReduxUtilityAction.setGameCode(dGame.code);
                 const game = LGame.new(dGame);
                 ReduxAction.add(game.raw);
-                const dPlayer: DPlayer = {name: user.name, sign: U.retrieveSign(user.id)};
+                const gameCards: PGameCard[] = [];
+                for(let card of user.deck.cards) {
+                    const dGameCard: DGameCard = {
+                        name: card.name,
+                        image: card.image
+                    };
+                    const gameCard = LGameCard.new(dGameCard);
+                    await MixinAction.add(gameCard.raw);
+                    gameCards.push(gameCard);
+                }
+                const dGameDeck: DGameDeck = {
+                    name: user.deck.name,
+                    gameCards: gameCards.map((gameCard) => {return gameCard.id})
+                }
+                const gameDeck = LGameDeck.new(dGameDeck);
+                await MixinAction.add(gameDeck.raw);
+                const dPlayer: DPlayer = {
+                    name: user.name,
+                    sign: U.retrieveSign(user.id),
+                    gameDeck: gameDeck.id
+                };
                 const player = LPlayer.new(dPlayer);
                 await MixinAction.add(player.raw);
                 game.running = true; game.playerTwo = player;

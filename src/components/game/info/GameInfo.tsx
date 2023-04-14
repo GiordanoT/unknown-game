@@ -25,8 +25,16 @@ function GameInfo(props: Props) {
             await U.sleep(1);
         }
         else {
-            if(game.playerOne) await FirebaseAction.remove(game.playerOne.raw);
-            if(game.playerTwo) await FirebaseAction.remove(game.playerTwo.raw);
+            if(game.playerOne) {
+                for(let gameCard of game.playerOne.gameDeck.gameCards) await FirebaseAction.remove(gameCard.raw);
+                await FirebaseAction.remove(game.playerOne.gameDeck.raw);
+                await FirebaseAction.remove(game.playerOne.raw);
+            }
+            if(game.playerTwo){
+                for(let gameCard of game.playerTwo.gameDeck.gameCards) await FirebaseAction.remove(gameCard.raw);
+                await FirebaseAction.remove(game.playerTwo.gameDeck.raw);
+                await FirebaseAction.remove(game.playerTwo.raw);
+            }
             await FirebaseAction.remove(game.raw);
         }
         window.location.reload();
