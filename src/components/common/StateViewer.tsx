@@ -10,6 +10,8 @@ export function StateViewerComponent(props: AllProps) {
             <b>user</b>: {JSON.stringify(props.state.user)} <br />
             <b>players</b>: {JSON.stringify(props.state.players)} <br />
             <b>game</b>: {JSON.stringify(props.state.game)} <br />
+            <b>cards</b>: {JSON.stringify(props.state.cards)} <br />
+            <b>decks</b>: {JSON.stringify(props.state.decks)} <br />
             <b>objects</b>: {JSON.stringify(props.state.objects)} <br />
         </label>
     </div>)

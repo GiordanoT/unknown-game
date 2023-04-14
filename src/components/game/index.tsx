@@ -7,8 +7,9 @@ import {Pointer} from "@/utils/type";
 import {DUser, LUser, PUser} from "@/data/User";
 import {FirebaseAction} from "@/firebase/actions";
 import {useEffectOnce} from "usehooks-ts";
-import GameInfo from "@/components/game/GameInfo";
-import GameBar from "@/components/game/GameBar";
+import GameInfo from "@/components/game/info/GameInfo";
+import GameBar from "@/components/game/info/GameBar";
+import Card from "@/components/game/cards/Card";
 
 function GameComponent(props: AllProps) {
     const user = props.user;
@@ -22,7 +23,7 @@ function GameComponent(props: AllProps) {
         <GameInfo user={user} game={game} />
         <GameBar user={user} player={game.playerOne} game={game} />
         <GameBar user={user} player={game.playerTwo} game={game} />
-        {game.winner?.name}
+        <Card card={user.deck.cards[0]} />
     </div>);
 
 

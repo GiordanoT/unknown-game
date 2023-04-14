@@ -79,19 +79,22 @@ export class ReduxAction {
     private static async addFIX(obj: DObject): Promise<{obj: DObject}> {
         const excludedFields = ['id'];
         for(let field in obj) {
-            const value = obj[field as keyof DObject];
-            if(!excludedFields.includes(field) && typeof value === 'string' && U.isPointer(value)) {
-                const pointer = value;
-                const objects = store.getState().objects;
-                const object: DObject|undefined = objects[pointer];
-                if(!object) {
-                    const collection = U.getCollection(field);
-                    const constraint: CONSTRAINT<DObject> = {field: 'id', operator: '==', value: pointer}
-                    if(collection) {
-                        const results = await FirebaseAction.select<DObject>(collection, constraint)
-                        if(results.length > 0) {
-                            const result = results[0];
-                            ReduxAction.add(result);
+            let values = obj[field as keyof DObject] as Value;
+            values = (Array.isArray(values)) ? values : [values];
+            for(let value of values) {
+                if (!excludedFields.includes(field) && typeof value === 'string' && U.isPointer(value)) {
+                    const pointer = value;
+                    const objects = store.getState().objects;
+                    const object: DObject | undefined = objects[pointer];
+                    if (!object) {
+                        const collection = U.getCollection(field);
+                        const constraint: CONSTRAINT<DObject> = {field: 'id', operator: '==', value: pointer}
+                        if (collection) {
+                            const results = await FirebaseAction.select<DObject>(collection, constraint)
+                            if (results.length > 0) {
+                                const result = results[0];
+                                ReduxAction.add(result);
+                            }
                         }
                     }
                 }

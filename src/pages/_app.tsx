@@ -7,10 +7,13 @@ import {auth} from "@/firebase";
 import {FirebaseAction} from "@/firebase/actions";
 import {DUser} from "@/data/User";
 import {CONSTRAINT} from "@/utils/type";
-import {Action} from "@/utils/actions";
+import {Action, MixinAction} from "@/utils/actions";
 import StateViewer from "@/components/common/StateViewer";
 import Head from "next/head";
 import React from "react";
+import {useEffectOnce} from "usehooks-ts";
+import {DCard, LCard} from "@/data/Card";
+import {ReduxAction} from "@/redux/actions";
 
 export default function App({ Component, pageProps }: AppProps) {
 

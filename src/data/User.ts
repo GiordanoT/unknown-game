@@ -4,27 +4,31 @@ import {store} from "@/redux";
 import {Action} from "@/utils/actions";
 import {DNamed, LNamed, PNamed} from "@/data/Named";
 import {DGame} from "@/data/Game";
+import {DDeck, LDeck, PDeck} from "@/data/Deck";
 
 ///<reference path='Named.ts' />
 export interface DUser extends DNamed {
     email: string;
     role: 'playerOne'|'playerTwo';
+    deck: Pointer<DDeck>;
 }
 
 export class LUser extends LNamed implements DUser {
     classname = LUser.name;
     email: string;
     role: 'playerOne'|'playerTwo';
+    deck: Pointer<DDeck>;
     raw!: DUser;
 
-    protected constructor(user: DUser) {
-        const named: DNamed = {id: user.id, name: user.name};
+    protected constructor(dObj: DUser) {
+        const named: DNamed = {id: dObj.id, name: dObj.name};
         super(named);
-        this.email = user.email;
-        this.role = user.role;
+        this.email = dObj.email;
+        this.role = dObj.role;
+        this.deck = dObj.deck;
     }
-    static new(user: DUser): PUser {
-        const obj = new LUser(user);
+    static new(dObj: DUser): PUser {
+        const obj = new LUser(dObj);
         return ProxyWrapper.wrap<PUser>(new Proxy(obj, ProxyWrapper.handler<LUser>()));
     }
 
@@ -42,9 +46,12 @@ export class LUser extends LNamed implements DUser {
         this.role = value;
         Action.EDIT<DUser>(this.getRaw(), 'role', value, Action.Mixin);
     }
+
+    getDeck(): PDeck {return LDeck.fromPointer(this.deck);}
 }
 
 export interface PUser extends PNamed {
     email: string;
     role: 'playerOne'|'playerTwo';
+    deck: PDeck;
 }

@@ -12,6 +12,10 @@ import {playerSlice} from "@/redux/store/player";
 import {LPlayer} from "@/data/Player";
 import {store} from "@/redux";
 import {utilitySlice} from "@/redux/store/utility";
+import {cardSlice} from "@/redux/store/card";
+import {LCard} from "@/data/Card";
+import {LDeck} from "@/data/Deck";
+import {deckSlice} from "@/redux/store/deck";
 
 export class U {
 
@@ -21,6 +25,8 @@ export class U {
             case LUser.name: return userSlice;
             case LPlayer.name: return playerSlice;
             case LGame.name: return gameSlice;
+            case LCard.name: return cardSlice;
+            case LDeck.name: return deckSlice;
             default: return null;
         }
     }
@@ -36,6 +42,8 @@ export class U {
             case LUser.name: return 'users';
             case LPlayer.name: return 'players';
             case LGame.name: return 'games';
+            case LCard.name: return 'cards';
+            case LDeck.name: return 'decks';
             default: return null;
         }
     }
@@ -44,6 +52,8 @@ export class U {
         switch(field) {
             case 'playerOne': return 'players';
             case 'playerTwo': return 'players';
+            case 'cards': return 'cards';
+            case 'deck': return 'decks';
             default: return null;
         }
     }
