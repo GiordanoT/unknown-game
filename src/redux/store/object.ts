@@ -9,7 +9,8 @@ export const objectSlice = createSlice({
     reducers: {
         add(state: Dictionary<T>, action: PayloadAction<T>){
             const obj = action.payload;
-            state[String(obj.id)] = obj;
+            if(obj) state[String(obj.id)] = obj;
+            else console.warn('REDUX: Object NOT defined');
         },
         remove(state: Dictionary<T>, action: PayloadAction<T>) {
             const obj = action.payload;
@@ -22,7 +23,7 @@ export const objectSlice = createSlice({
             const pointer = String(obj.id);
             const field = payload.field as keyof T;
             if(state[pointer]) state[pointer][field] = payload.value;
-            else console.error(pointer + ' is NOT in objects');
+            else console.warn('REDUX: ' + pointer + ' is NOT in objects');
 
         }
     }

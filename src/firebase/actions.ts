@@ -21,7 +21,6 @@ import {ReduxAction} from "@/redux/actions";
 import {U} from "@/utils/functions";
 import {DPointer} from "@/data/Pointer";
 import {DUser, LUser} from "@/data/User";
-import {onValue, ref} from "@firebase/database";
 import {store} from "@/redux";
 
 export class FirebaseAction {
@@ -113,7 +112,7 @@ export class FirebaseAction {
         try {
             await createUserWithEmailAndPassword(auth, email, password);
             const name = 'USER' + Date.now();
-            const dUser: DUser = {name, email, role: 'playerOne'};
+            const dUser: DUser = {name, email, role: 'playerOne', deck: 'todo: change'};
             const user = LUser.new(dUser);
             await MixinAction.add(user.raw);
             return true;

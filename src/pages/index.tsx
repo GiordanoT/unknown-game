@@ -27,7 +27,7 @@ export default function HomePage() {
     useEffectOnce(() => {U.sleep(2).then(() => setLoading(false))});
 
     useEffect(() => {
-        if(userID) {
+        if(userID && gameID === '') {
             const sign = U.retrieveSign(userID);
             const constraint: CONSTRAINT<DPlayer> = {field: 'sign', operator: '==', value: sign};
             FirebaseAction.select<DPlayer>('players', constraint).then((players) => {
@@ -37,16 +37,16 @@ export default function HomePage() {
                         const constraints: CONSTRAINT<DGame>[] = [];
                         constraints.push({field: 'playerOne', operator: '==', value: dPlayer.id});
                         constraints.push({field: 'playerTwo', operator: '==', value: dPlayer.id});
-                        FirebaseAction.select('games', constraints, false).then((games) => {
+                        FirebaseAction.select('games', constraints, false).then(async(games) => {
                             if(games.length > 0) {
                                 const dGame = games[0];
                                 ReduxUtilityAction.setGameCode(dGame.code);
-                                ReduxAction.add(dGame);
+                                ReduxAction.add(dGame, true);
                             }
                         });
                     }
                 }
-            })
+            });
         }
     }, [router, userID, gameID]);
 

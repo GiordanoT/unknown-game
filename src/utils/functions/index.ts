@@ -22,6 +22,7 @@ import {LGameDeck} from "@/data/GameDeck";
 export class U {
 
     public static getSlice(obj: DObject): null|Slice {
+        if(!obj) return null;
         switch(obj.classname) {
             case LLobby.name: return lobbySlice;
             case LUser.name: return userSlice;
@@ -39,6 +40,7 @@ export class U {
     }
 
     private static objectToCollection(obj: DObject): null|string {
+        if(!obj) return null;
         switch(obj.classname) {
             case LLobby.name: return 'lobbies';
             case LUser.name: return 'users';

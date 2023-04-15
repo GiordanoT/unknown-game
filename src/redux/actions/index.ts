@@ -5,6 +5,7 @@ import {U} from "@/utils/functions";
 import {ReduxPointerAction} from "@/redux/actions/pointer";
 import {DPointer} from "@/data/Pointer";
 import {FirebaseAction} from "@/firebase/actions";
+import {ReduxUtilityAction} from "@/redux/actions/utility";
 
 export class ReduxAction {
     static load(newObjects: DObject[], classname: string): void {
@@ -19,20 +20,24 @@ export class ReduxAction {
         }
         for(let newObject of newObjects) {
             const oldObject = oldObjects.find((obj) => {return obj.id === newObject.id});
-            if(!oldObject) {
-                ReduxAction.add(dict.obj);
-            }
+            if(!oldObject) ReduxAction.add(newObject);
             else U.delta(oldObject, newObject);
         }
     }
 
-    static add(obj: DObject): void {
-        ReduxAction.addFIX(obj).then((dict) => {
-            store.dispatch(objectSlice.actions.add(dict.obj));
-            U.log(`ADD ${obj.classname}`, dict.obj);
-            const slice = U.getSlice(dict.obj);
-            if(slice) ReduxPointerAction.add(slice, dict.obj);
+    static add(obj: DObject, blocking: boolean = false): void {
+        if(blocking) ReduxUtilityAction.setLoading(true);
+        ReduxAction._add(obj).then(() => {
+            if(blocking) ReduxUtilityAction.setLoading(false);
         });
+    }
+
+    private static async _add(obj: DObject): Promise<void> {
+        await ReduxAction.addFIX(obj);
+        store.dispatch(objectSlice.actions.add(obj));
+        U.log(`ADD ${obj?.classname}`, obj);
+        const slice = U.getSlice(obj);
+        if(slice) ReduxPointerAction.add(slice, obj);
     }
 
     static remove(obj: DObject): void {
@@ -42,11 +47,12 @@ export class ReduxAction {
         U.log(`REMOVE ${obj.classname}`, obj);
     }
 
+
     static edit<T extends DPointer>(obj: T, field: keyof T, value: Value): void {
         ReduxAction.editFIX(obj, String(field), value).then((dict) => {
             const dEdit = {obj: dict.obj, field: dict.field, value: dict.value};
             store.dispatch(objectSlice.actions.edit(dEdit));
-            U.log(`EDIT ${obj.classname}: ${String(dict.field)} -> ${dict.value}`);
+            U.log(`EDIT ${dict.obj.classname}: ${String(dict.field)} -> ${dict.value}`);
         });
     }
 
@@ -71,7 +77,7 @@ export class ReduxAction {
                         const results = await FirebaseAction.select<DObject>(collection, constraint)
                         if (results.length > 0) {
                             const result = results[0];
-                            ReduxAction.add(result);
+                            await ReduxAction._add(result);
                         }
                     }
                 }
@@ -80,7 +86,7 @@ export class ReduxAction {
         return {obj, field: field as keyof DObject, value: _values};
     }
 
-    private static async addFIX(obj: DObject): Promise<{obj: DObject}> {
+    static async addFIX(obj: DObject): Promise<{obj: DObject}> {
         const excludedFields = ['id'];
         for(let field in obj) {
             let values = obj[field as keyof DObject] as Value;
@@ -97,7 +103,7 @@ export class ReduxAction {
                             const results = await FirebaseAction.select<DObject>(collection, constraint)
                             if (results.length > 0) {
                                 const result = results[0];
-                                ReduxAction.add(result);
+                                await ReduxAction._add(result);
                             }
                         }
                     }

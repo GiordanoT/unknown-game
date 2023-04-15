@@ -9,21 +9,28 @@ import {FirebaseAction} from "@/firebase/actions";
 import {useEffectOnce} from "usehooks-ts";
 import GameInfo from "@/components/game/info/GameInfo";
 import GameBar from "@/components/game/info/GameBar";
+import {LGameCard} from "@/data/GameCard";
+import {LGameDeck} from "@/data/GameDeck";
 import Card from "@/components/game/cards/Card";
 
 function GameComponent(props: AllProps) {
     const user = props.user;
     const game = props.game;
 
+    const card = game.playerOne?.gameDeck.gameCards[0];
+
+
     useEffectOnce(() => {
         FirebaseAction.load('games', LGame.name, game.id).then();
+        FirebaseAction.load(game.code + '_cards', LGameCard.name).then();
+        FirebaseAction.load(game.code + '_decks', LGameDeck.name).then();
     });
 
     return(<div>
         <GameInfo user={user} game={game} />
         <GameBar user={user} player={game.playerOne} game={game} />
         <GameBar user={user} player={game.playerTwo} game={game} />
-        <Card card={user.deck.cards[0]} />
+        {card && <Card card={card} />}
     </div>);
 
 

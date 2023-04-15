@@ -24,15 +24,13 @@ export class LPlayer extends LNamed implements DPlayer {
         this.gameDeck = dObj.gameDeck;
     }
     static new(dObj: DPlayer): PPlayer {
-        if(!dObj) window.location.reload();
+        // if(!dObj) window.location.reload();
         const obj = new LPlayer(dObj);
         return ProxyWrapper.wrap<PPlayer>(new Proxy(obj, ProxyWrapper.handler<LPlayer>()));
     }
 
     static fromPointer(pointer: Pointer<DPlayer>): PPlayer {
         const objects = store.getState().objects;
-        console.log(objects);
-        console.log(pointer)
         const object = objects[pointer] as DPlayer;
         return LPlayer.new(object);
     }

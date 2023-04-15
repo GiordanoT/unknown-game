@@ -4,17 +4,7 @@ import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
 
 export function StateViewerComponent(props: AllProps) {
-    return(<div className={'mt-5'}>
-        <label className={'d-block text-center'}>
-            <b>utility</b>: {JSON.stringify(props.state.utility)} <br />
-            <b>user</b>: {JSON.stringify(props.state.user)} <br />
-            <b>players</b>: {JSON.stringify(props.state.players)} <br />
-            <b>game</b>: {JSON.stringify(props.state.game)} <br />
-            <b>cards</b>: {JSON.stringify(props.state.cards)} <br />
-            <b>decks</b>: {JSON.stringify(props.state.decks)} <br />
-            <b>objects</b>: {JSON.stringify(props.state.objects)} <br />
-        </label>
-    </div>)
+    return(<></>);
 }
 
 interface OwnProps {}

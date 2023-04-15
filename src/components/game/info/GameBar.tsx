@@ -17,6 +17,7 @@ function GameBar(props: Props) {
         <label className={'cursor-default'} style={{color: (!game.winner) ? 'white' : (game.winner.id === player?.id) ? 'green' : 'red'}}>
             {(player) ? player.name : '???'}
         </label>
+        <h4>{player?.gameDeck.gameCards.length}</h4>
     </div>);
 }
 export default GameBar;
