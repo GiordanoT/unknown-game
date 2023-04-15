@@ -6,7 +6,7 @@ import Home from "@/components/home";
 import Loading from "@/components/common/Loading";
 import {U} from "@/utils/functions";
 import {useRouter} from "next/router";
-import {DGame} from "@/data/Game";
+import {DGame, LGame, PGame} from "@/data/Game";
 import {CONSTRAINT} from "@/utils/type";
 import {DPlayer} from "@/data/Player";
 import {FirebaseAction} from "@/firebase/actions";
@@ -14,6 +14,7 @@ import Auth from "@/components/auth";
 import Game from "@/components/game";
 import {ReduxAction} from "@/redux/actions";
 import {ReduxUtilityAction} from "@/redux/actions/utility";
+import game from "@/components/game";
 
 export default function HomePage() {
     const router = useRouter();
@@ -21,6 +22,7 @@ export default function HomePage() {
     const [loading, setLoading] = useState(true);
     const userID = useSelector((state: RootState) => state.user).pointer;
     const gameID = useSelector((state: RootState) => state.game).pointer;
+
 
     useEffectOnce(() => {U.sleep(2).then(() => setLoading(false))});
 
@@ -46,7 +48,7 @@ export default function HomePage() {
                 }
             })
         }
-    }, [router, userID]);
+    }, [router, userID, gameID]);
 
 
     return (<>

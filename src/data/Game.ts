@@ -25,18 +25,18 @@ export class LGame extends LPointer implements DGame {
     winner: null|Pointer<DPlayer>;
     raw!: DGame;
 
-    protected constructor(game: DGame) {
-        const pointer: DPointer = {id: game.id}
+    protected constructor(dObj: DGame) {
+        const pointer: DPointer = {id: dObj.id}
         super(pointer);
-        this.code = game.code;
-        this.playerOne = game.playerOne;
-        this.playerTwo = game.playerTwo;
-        this.running = game.running;
-        this.eliminable = game.eliminable;
-        this.winner = game.winner
+        this.code = dObj.code;
+        this.playerOne = dObj.playerOne;
+        this.playerTwo = dObj.playerTwo;
+        this.running = dObj.running;
+        this.eliminable = dObj.eliminable;
+        this.winner = dObj.winner
     }
-    static new(game: DGame): PGame {
-        const obj = new LGame(game);
+    static new(dObj: DGame): PGame {
+        const obj = new LGame(dObj);
         return ProxyWrapper.wrap<PGame>(new Proxy(obj, ProxyWrapper.handler<LGame>()));
     }
 

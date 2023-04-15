@@ -12,13 +12,13 @@ export class LNamed extends LPointer implements DNamed {
     name: string;
     raw!: DNamed;
 
-    protected constructor(named: DNamed) {
-        const pointer: DPointer = {id: named.id}
+    protected constructor(dObj: DNamed) {
+        const pointer: DPointer = {id: dObj.id}
         super(pointer);
-        this.name = named.name;
+        this.name = dObj.name;
     }
-    static new(named: DNamed): PNamed {
-        const obj = new LNamed(named);
+    static new(dObj: DNamed): PNamed {
+        const obj = new LNamed(dObj);
         return ProxyWrapper.wrap<PNamed>(new Proxy(obj, ProxyWrapper.handler<LNamed>()));
     }
 

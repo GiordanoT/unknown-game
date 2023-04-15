@@ -5,7 +5,7 @@ import {lobbySlice} from "@/redux/store/lobby";
 import {userSlice} from "@/redux/store/user";
 import {LLobby} from "@/data/Lobby";
 import {LUser} from "@/data/User";
-import {LGame, PGame} from "@/data/Game";
+import {LGame} from "@/data/Game";
 import {gameSlice} from "@/redux/store/game";
 import {NextRouter} from "next/router";
 import {playerSlice} from "@/redux/store/player";
@@ -54,7 +54,7 @@ export class U {
 
     private static fieldToCollection(field: string): null|string {
         switch(field) {
-            case 'playerOne': return 'players';
+            case 'playerOne':
             case 'playerTwo': return 'players';
             case 'cards': return 'cards';
             case 'gameCards': return store.getState().utility.gameCode + '_cards';
