@@ -3,7 +3,7 @@ import {Html, Head, Main, NextScript} from 'next/document';
 export default function Document() {
     return (<Html lang={'en'}>
         <Head>
-            <link rel={'shortcut icon'} href={'icon.svg'} />
+            <link rel={'shortcut icon'} href={'svg/icon.svg'} />
         </Head>
         <body>
             <Main />

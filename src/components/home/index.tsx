@@ -14,6 +14,7 @@ import {ReduxUtilityAction} from "@/redux/actions/utility";
 import {ReduxAction} from "@/redux/actions";
 import {DGameCard, LGameCard, PGameCard} from "@/data/GameCard";
 import {DGameDeck, LGameDeck, PGameDeck} from "@/data/GameDeck";
+import {DGameHand, LGameHand} from "@/data/GameHand";
 
 function HomeComponent(props: AllProps) {
     const user = props.user;
@@ -34,10 +35,17 @@ function HomeComponent(props: AllProps) {
         await MixinAction.add(pGame.raw);
         ReduxUtilityAction.setGameCode(dGame.code);
         const gameCards: PGameCard[] = [];
+        user.deck.shuffle;
         for(let card of user.deck.cards) {
             const dGameCard: DGameCard = {
                 name: card.name,
-                image: card.image
+                image: card.image,
+                class: card.class,
+                faction: card.faction,
+                level: card.level,
+                atk: card.atk,
+                hp: card.hp,
+                speed: card.speed
             };
             const gameCard = LGameCard.new(dGameCard);
             await MixinAction.add(gameCard.raw);
@@ -49,10 +57,23 @@ function HomeComponent(props: AllProps) {
         }
         const gameDeck = LGameDeck.new(dGameDeck);
         await MixinAction.add(gameDeck.raw);
+
+        const handCards: PGameCard[] = [];
+        for(let i = 0; i < 5; i++) {
+            const card = await gameDeck.draw;
+            if(card) handCards.push(card);
+        }
+        const dGameHand: DGameHand = {
+            gameCards: handCards.map((card) => {return card.id})
+        }
+        const gameHand = LGameHand.new(dGameHand);
+        await MixinAction.add(gameHand.raw);
+
         const dPlayer: DPlayer = {
             name: user.name,
             sign: U.retrieveSign(user.id),
-            gameDeck: gameDeck.id
+            gameDeck: gameDeck.id,
+            gameHand: gameHand.id
         };
         const player = LPlayer.new(dPlayer);
         await MixinAction.add(player.raw);
@@ -72,10 +93,17 @@ function HomeComponent(props: AllProps) {
                 const game = LGame.new(dGame);
                 ReduxAction.add(game.raw);
                 const gameCards: PGameCard[] = [];
+                user.deck.shuffle;
                 for(let card of user.deck.cards) {
                     const dGameCard: DGameCard = {
                         name: card.name,
-                        image: card.image
+                        image: card.image,
+                        class: card.class,
+                        faction: card.faction,
+                        level: card.level,
+                        atk: card.atk,
+                        hp: card.hp,
+                        speed: card.speed
                     };
                     const gameCard = LGameCard.new(dGameCard);
                     await MixinAction.add(gameCard.raw);
@@ -87,10 +115,23 @@ function HomeComponent(props: AllProps) {
                 }
                 const gameDeck = LGameDeck.new(dGameDeck);
                 await MixinAction.add(gameDeck.raw);
+
+                const handCards: PGameCard[] = [];
+                for(let i = 0; i < 5; i++) {
+                    const card = await gameDeck.draw;
+                    if(card) handCards.push(card);
+                }
+                const dGameHand: DGameHand = {
+                    gameCards: handCards.map((card) => {return card.id})
+                }
+                const gameHand = LGameHand.new(dGameHand);
+                await MixinAction.add(gameHand.raw);
+
                 const dPlayer: DPlayer = {
                     name: user.name,
                     sign: U.retrieveSign(user.id),
-                    gameDeck: gameDeck.id
+                    gameDeck: gameDeck.id,
+                    gameHand: gameHand.id
                 };
                 const player = LPlayer.new(dPlayer);
                 await MixinAction.add(player.raw);

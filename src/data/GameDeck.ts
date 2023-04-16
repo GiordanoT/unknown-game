@@ -1,7 +1,7 @@
 import {Pointer} from "@/utils/type";
 import {ProxyWrapper} from "@/utils/proxy";
 import {store} from "@/redux";
-import {Action} from "@/utils/actions";
+import {Action, MixinAction} from "@/utils/actions";
 import {DNamed, LNamed, PNamed} from "@/data/Named";
 import {DGameCard, LGameCard, PGameCard} from "@/data/GameCard";
 
@@ -40,8 +40,21 @@ export class LGameDeck extends LNamed implements DGameDeck {
         }
         return cards;
     }
+
+    async getDraw(): Promise<null|PGameCard> {
+        const cards = [...this.gameCards];
+        const card = cards.pop();
+        if(card) {
+            this.gameCards = cards;
+            await MixinAction.edit(this.getRaw(), 'gameCards', cards);
+            return LGameCard.fromPointer(card);
+        }
+        else return null;
+    }
 }
 
 export interface PGameDeck extends PNamed {
     gameCards: PGameCard[];
+
+    draw: Promise<null|PGameCard>;
 }

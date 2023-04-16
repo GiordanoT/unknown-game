@@ -12,6 +12,9 @@ import GameBar from "@/components/game/info/GameBar";
 import {LGameCard} from "@/data/GameCard";
 import {LGameDeck} from "@/data/GameDeck";
 import Card from "@/components/game/cards/Card";
+import Hand from "@/components/game/cards/Hand";
+import {LGameHand} from "@/data/GameHand";
+import Deck from "@/components/game/cards/Deck";
 
 function GameComponent(props: AllProps) {
     const user = props.user;
@@ -24,13 +27,21 @@ function GameComponent(props: AllProps) {
         FirebaseAction.load('games', LGame.name, game.id).then();
         FirebaseAction.load(game.code + '_cards', LGameCard.name).then();
         FirebaseAction.load(game.code + '_decks', LGameDeck.name).then();
+        FirebaseAction.load(game.code + '_hands', LGameHand.name).then();
     });
+
+    const draw = async () => {
+        const player = game[user.role];
+        if(player) await (game.draw = player);
+    }
 
     return(<div>
         <GameInfo user={user} game={game} />
         <GameBar user={user} player={game.playerOne} game={game} />
         <GameBar user={user} player={game.playerTwo} game={game} />
-        {card && <Card card={card} />}
+        <button className={'m-5 p-5'} onClick={draw}>DRAW</button>
+        {game.playerOne && <Hand hand={game.playerOne.gameHand} /> }
+        {game.playerOne && <Deck deck={game.playerOne.gameDeck} /> }
     </div>);
 
 

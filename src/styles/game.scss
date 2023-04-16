@@ -1,3 +1,7 @@
+@import 'variables';
+
+$card-size: 9em;
+
 .player-bar {
   background-color: indigo;
   width: 100%;
@@ -6,8 +10,9 @@
 }
 
 .game-card {
-  position: absolute;
+  background-color: white;
   z-index: 1;
-  border: 1px solid red;
-  width: 10em; height: 15em;
+  border: 1px solid black;
+  border-radius: $radius;
+  width: $card-size; height: $card-size + ($card-size / 2);
 }

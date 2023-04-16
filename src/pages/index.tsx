@@ -24,7 +24,7 @@ export default function HomePage() {
     const gameID = useSelector((state: RootState) => state.game).pointer;
 
 
-    useEffectOnce(() => {U.sleep(2).then(() => setLoading(false))});
+    useEffectOnce(() => {U.sleep(3).then(() => setLoading(false))});
 
     useEffect(() => {
         if(userID && gameID === '') {

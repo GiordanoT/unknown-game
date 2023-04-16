@@ -91,6 +91,12 @@ export class LGame extends LPointer implements DGame {
         Action.EDIT<DGame>(this.getRaw(), 'winner', value.id, Action.Firebase);
     }
 
+    async setDraw(player : PPlayer): Promise<void> {
+        const card = await player.gameDeck.draw;
+        if(card) await (player.gameHand.addCard = card);
+        else alert('empty deck');
+    }
+
 }
 
 export interface PGame extends PPointer {
@@ -100,4 +106,7 @@ export interface PGame extends PPointer {
     running: boolean;
     eliminable: boolean;
     winner: null|PPlayer;
+
+    // functions
+    draw: PPlayer;
 }

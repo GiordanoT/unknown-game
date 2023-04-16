@@ -7,12 +7,9 @@ import {auth} from "@/firebase";
 import {FirebaseAction} from "@/firebase/actions";
 import {DUser} from "@/data/User";
 import {CONSTRAINT} from "@/utils/type";
-import {Action, MixinAction} from "@/utils/actions";
 import StateViewer from "@/components/common/StateViewer";
 import Head from "next/head";
 import React from "react";
-import {useEffectOnce} from "usehooks-ts";
-import {DCard, LCard} from "@/data/Card";
 import {ReduxAction} from "@/redux/actions";
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -21,7 +18,7 @@ export default function App({ Component, pageProps }: AppProps) {
     if(user) {
       const constraint: CONSTRAINT<DUser> = {field: 'email', operator: '==', value: user.email};
       const users = await FirebaseAction.select<DUser>('users', constraint);
-      if(users.length > 0) Action.ADD(users[0], Action.Redux);
+      if(users.length > 0) ReduxAction.add(users[0], true);
     }
   });
 

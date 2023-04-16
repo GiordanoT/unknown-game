@@ -18,6 +18,7 @@ import {LDeck} from "@/data/Deck";
 import {deckSlice} from "@/redux/store/deck";
 import {LGameCard} from "@/data/GameCard";
 import {LGameDeck} from "@/data/GameDeck";
+import {LGameHand} from "@/data/GameHand";
 
 export class U {
 
@@ -30,6 +31,9 @@ export class U {
             case LGame.name: return gameSlice;
             case LCard.name: return cardSlice;
             case LDeck.name: return deckSlice;
+            case LGameCard.name:
+            case LGameDeck.name:
+            case LGameHand.name:
             default: return null;
         }
     }
@@ -50,6 +54,7 @@ export class U {
             case LDeck.name: return 'decks';
             case LGameCard.name: return store.getState().utility.gameCode + '_cards';
             case LGameDeck.name: return store.getState().utility.gameCode + '_decks';
+            case LGameHand.name: return store.getState().utility.gameCode + '_hands';
             default: return null;
         }
     }
@@ -62,6 +67,7 @@ export class U {
             case 'gameCards': return store.getState().utility.gameCode + '_cards';
             case 'deck': return 'decks';
             case 'gameDeck': return store.getState().utility.gameCode + '_decks';
+            case 'gameHand': return store.getState().utility.gameCode + '_hands';
             default: return null;
         }
     }

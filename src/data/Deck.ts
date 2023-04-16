@@ -4,6 +4,7 @@ import {store} from "@/redux";
 import {Action} from "@/utils/actions";
 import {DNamed, LNamed, PNamed} from "@/data/Named";
 import {DCard, LCard, PCard} from "@/data/Card";
+import {ReduxAction} from "@/redux/actions";
 
 ///<reference path='Named.ts' />
 export interface DDeck extends DNamed {
@@ -40,9 +41,20 @@ export class LDeck extends LNamed implements DDeck {
         }
         return cards;
     }
+
+    getShuffle(): void {
+        const deck = [...this.cards];
+        for (let i = deck.length - 1; i > 0; i--) {
+            let j = Math.floor(Math.random() * (i + 1));
+            [deck[i], deck[j]] = [deck[j], deck[i]];
+        }
+        this.cards = deck;
+        ReduxAction.edit(this.getRaw(), 'cards', deck);
+    }
+
 }
 
 export interface PDeck extends PNamed {
     cards: PCard[];
-
+    shuffle: void;
 }

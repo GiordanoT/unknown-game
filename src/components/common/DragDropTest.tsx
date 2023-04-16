@@ -1,9 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {RootState} from '@/redux';
 import {Dispatch} from 'redux';
 import {connect} from 'react-redux';
 import {useDrag, useDrop} from "react-dnd";
 import {DUser, LUser} from "@/data/User";
+import {FirebaseAction} from "@/firebase/actions";
+import {DCard, LCard} from "@/data/Card";
 
 
 export function TestComponent(props: AllProps) {
@@ -36,7 +38,25 @@ export function TestComponent(props: AllProps) {
         if(isOver2) css2 = 'bg-success';
         else css2 = 'bg-danger';
     }
+
+    const add = async() => {
+        const dCard: DCard = {
+            name: 'Centauro Guaritore',
+            image: '',
+            class: 'Beast',
+            faction: ['White', 'Green'],
+            level: 2,
+            atk: 3,
+            hp: 3,
+            speed: 2
+        };
+        const card = LCard.new(dCard);
+        await FirebaseAction.add(card.raw);
+
+    }
+
     return(<div className={'d-flex mt-3 mx-5'}>
+        <button onClick={add}>add</button>
         <div ref={drop1} style={{width: '500px', height: '500px'}} className={css1}></div>
         <div ref={drop2} style={{width: '500px', height: '500px'}} className={'mx-3 ' + css2}></div>
         {!isDragging && <div ref={drag} style={{width: '200px', height: '200px'}} className={'bg-warning'}></div>}
