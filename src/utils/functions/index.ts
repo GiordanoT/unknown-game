@@ -16,9 +16,10 @@ import {cardSlice} from "@/redux/store/card";
 import {LCard} from "@/data/Card";
 import {LDeck} from "@/data/Deck";
 import {deckSlice} from "@/redux/store/deck";
-import {LGameCard} from "@/data/GameCard";
+import {LGameCard, PGameCard} from "@/data/GameCard";
 import {LGameDeck} from "@/data/GameDeck";
 import {LGameHand} from "@/data/GameHand";
+import {MixinAction} from "@/utils/actions";
 
 export class U {
 
@@ -130,4 +131,5 @@ export class U {
         if(role === 'playerOne') return 'playerTwo';
         else return 'playerOne';
     }
+
 }

@@ -13,7 +13,7 @@ import {DPlayer, LPlayer} from "@/data/Player";
 import {ReduxUtilityAction} from "@/redux/actions/utility";
 import {ReduxAction} from "@/redux/actions";
 import {DGameCard, LGameCard, PGameCard} from "@/data/GameCard";
-import {DGameDeck, LGameDeck, PGameDeck} from "@/data/GameDeck";
+import {DGameDeck, LGameDeck} from "@/data/GameDeck";
 import {DGameHand, LGameHand} from "@/data/GameHand";
 
 function HomeComponent(props: AllProps) {
@@ -38,6 +38,7 @@ function HomeComponent(props: AllProps) {
         user.deck.shuffle;
         for(let card of user.deck.cards) {
             const dGameCard: DGameCard = {
+                animation: 'BlurIn',
                 name: card.name,
                 image: card.image,
                 class: card.class,
@@ -96,6 +97,7 @@ function HomeComponent(props: AllProps) {
                 user.deck.shuffle;
                 for(let card of user.deck.cards) {
                     const dGameCard: DGameCard = {
+                        animation: 'BlurIn',
                         name: card.name,
                         image: card.image,
                         class: card.class,

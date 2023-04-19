@@ -4,6 +4,8 @@ import {store} from "@/redux";
 import {Action, MixinAction} from "@/utils/actions";
 import {DNamed, LNamed, PNamed} from "@/data/Named";
 import {DGameCard, LGameCard, PGameCard} from "@/data/GameCard";
+import {U} from "@/utils/functions";
+import {LAnimated} from "@/data/Animated";
 
 ///<reference path='Named.ts' />
 export interface DGameDeck extends DNamed {
@@ -43,11 +45,15 @@ export class LGameDeck extends LNamed implements DGameDeck {
 
     async getDraw(): Promise<null|PGameCard> {
         const cards = [...this.gameCards];
-        const card = cards.pop();
-        if(card) {
+        const cardPointer = cards.pop();
+        if(cardPointer) {
+            const card = LGameCard.fromPointer(cardPointer);
+            await MixinAction.edit(card.raw, 'animation', 'BlurOut');
+            await U.sleep(LAnimated.duration / 2);
             this.gameCards = cards;
             await MixinAction.edit(this.getRaw(), 'gameCards', cards);
-            return LGameCard.fromPointer(card);
+            await MixinAction.edit(card.raw, 'animation', 'BlurIn');
+            return card;
         }
         else return null;
     }

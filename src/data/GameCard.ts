@@ -1,11 +1,12 @@
 import {Class, Faction, Pointer} from "@/utils/type";
 import {ProxyWrapper} from "@/utils/proxy";
 import {store} from "@/redux";
-import {Action} from "@/utils/actions";
+import {Action, MixinAction} from "@/utils/actions";
 import {DNamed, LNamed, PNamed} from "@/data/Named";
+import {DAnimated, LAnimated, PAnimated} from "@/data/Animated";
 
 ///<reference path='Named.ts' />
-export interface DGameCard extends DNamed {
+export interface DGameCard extends DAnimated {
     image: string;
     class: Class;
     faction: Faction;
@@ -15,7 +16,7 @@ export interface DGameCard extends DNamed {
     speed: number;
 }
 
-export class LGameCard extends LNamed implements DGameCard {
+export class LGameCard extends LAnimated implements DGameCard {
     classname = LGameCard.name;
     image: string;
     class: Class;
@@ -27,8 +28,8 @@ export class LGameCard extends LNamed implements DGameCard {
     raw!: DGameCard;
 
     protected constructor(dObj: DGameCard) {
-        const named: DNamed = {id: dObj.id, name: dObj.name};
-        super(named);
+        const animated: DAnimated = {id: dObj.id, name: dObj.name, animation: dObj.animation};
+        super(animated);
         this.image = dObj.image;
         this.class = dObj.class;
         this.faction = dObj.faction;
@@ -47,7 +48,9 @@ export class LGameCard extends LNamed implements DGameCard {
         const object = objects[pointer] as DGameCard;
         return LGameCard.new(object);
     }
+
     setName(name: this['name']): void {super.setName(name, Action.Mixin);}
+
 
     getImage(): string {return this.image}
     getClass(): Class {return this.class}
@@ -58,7 +61,7 @@ export class LGameCard extends LNamed implements DGameCard {
     getSpeed(): number {return this.speed}
 }
 
-export interface PGameCard extends PNamed {
+export interface PGameCard extends PAnimated {
     image: string;
     class: Class;
     faction: Faction;
@@ -66,4 +69,5 @@ export interface PGameCard extends PNamed {
     atk: number;
     hp: number;
     speed: number;
+    raw: DGameCard;
 }

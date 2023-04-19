@@ -1,6 +1,7 @@
 import {Pointer} from "@/utils/type";
 import {U} from "@/utils/functions";
 import {ProxyWrapper} from "@/utils/proxy";
+import {MixinAction} from "@/utils/actions";
 
 export interface DPointer {
     id?: Pointer;
@@ -22,6 +23,7 @@ export class LPointer implements DPointer {
 
     getId(): this['id'] {return this.id;}
     getRaw(): this['raw'] {return {...this};}
+
 }
 
 export interface PPointer {
