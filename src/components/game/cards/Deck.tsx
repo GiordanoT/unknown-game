@@ -7,10 +7,10 @@ function Deck(props: Props) {
     const deck = props.deck;
 
 
-    return(<div className={'d-flex'}>
+    return(<div className={'d-flex position-absolute bottom-o'}>
         {deck.gameCards.map((card, index) => {
-            return(<div key={index} className={'ms-1'}>
-                <Card card={card} />
+            return(<div key={index} style={{marginLeft: '0.2rem'}}>
+                <Card card={card} hidden={true} />
             </div>);
         })}
     </div>);

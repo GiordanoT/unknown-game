@@ -6,6 +6,7 @@ import {DNamed, LNamed, PNamed} from "@/data/Named";
 
 ///<reference path='Named.ts' />
 export interface DCard extends DNamed {
+    code: number;
     image: string;
     class: Class;
     faction: Faction;
@@ -17,6 +18,7 @@ export interface DCard extends DNamed {
 
 export class LCard extends LNamed implements DCard {
     classname = LCard.name;
+    code: number;
     image: string;
     class: Class;
     faction: Faction;
@@ -29,6 +31,7 @@ export class LCard extends LNamed implements DCard {
     protected constructor(dObj: DCard) {
         const named: DNamed = {id: dObj.id, name: dObj.name};
         super(named);
+        this.code = dObj.code;
         this.image = dObj.image;
         this.class = dObj.class;
         this.faction = dObj.faction;
@@ -49,6 +52,7 @@ export class LCard extends LNamed implements DCard {
     }
     setName(name: this['name']): void {super.setName(name, Action.Mixin);}
 
+    getCode(): number {return this.code;}
     getImage(): string {return this.image;}
     getClass(): Class {return this.class}
     getFaction(): Faction {return this.faction}
@@ -59,6 +63,7 @@ export class LCard extends LNamed implements DCard {
 }
 
 export interface PCard extends PNamed {
+    code: number;
     image: string;
     class: Class;
     faction: Faction;

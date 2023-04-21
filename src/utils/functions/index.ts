@@ -1,4 +1,4 @@
-import {Dictionary, DObject, Value} from "@/utils/type";
+import {Animation, Dictionary, DObject, Value} from "@/utils/type";
 import {ReduxAction} from "@/redux/actions";
 import {Slice} from "@reduxjs/toolkit";
 import {lobbySlice} from "@/redux/store/lobby";
@@ -19,7 +19,9 @@ import {deckSlice} from "@/redux/store/deck";
 import {LGameCard, PGameCard} from "@/data/GameCard";
 import {LGameDeck} from "@/data/GameDeck";
 import {LGameHand} from "@/data/GameHand";
-import {MixinAction} from "@/utils/actions";
+import {CSSProperties} from "react";
+import {Card000} from "@/data/cards/000";
+import {Card001} from "@/data/cards/001";
 
 export class U {
 
@@ -131,5 +133,19 @@ export class U {
         if(role === 'playerOne') return 'playerTwo';
         else return 'playerOne';
     }
+
+    static getAnimation(animation: Animation): {start: CSSProperties, end: CSSProperties} {
+        switch(animation) {
+            case 'BlurIn': return {
+                start: {opacity: 0, filter: 'blur(10px)'},
+                end: {opacity: 1, filter: 'blur(0px)'}
+            }
+            case 'BlurOut': return {
+                start: {opacity: 1, filter: 'blur(0px)'},
+                end: {opacity: 0, filter: 'blur(10px)'}
+            }
+        }
+    }
+
 
 }

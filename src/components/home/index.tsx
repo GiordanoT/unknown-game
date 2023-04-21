@@ -39,6 +39,7 @@ function HomeComponent(props: AllProps) {
         for(let card of user.deck.cards) {
             const dGameCard: DGameCard = {
                 animation: 'BlurIn',
+                code: card.code,
                 name: card.name,
                 image: card.image,
                 class: card.class,
@@ -98,6 +99,7 @@ function HomeComponent(props: AllProps) {
                 for(let card of user.deck.cards) {
                     const dGameCard: DGameCard = {
                         animation: 'BlurIn',
+                        code: card.code,
                         name: card.name,
                         image: card.image,
                         class: card.class,

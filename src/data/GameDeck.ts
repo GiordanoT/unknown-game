@@ -49,7 +49,7 @@ export class LGameDeck extends LNamed implements DGameDeck {
         if(cardPointer) {
             const card = LGameCard.fromPointer(cardPointer);
             await MixinAction.edit(card.raw, 'animation', 'BlurOut');
-            await U.sleep(LAnimated.duration / 2);
+            await U.sleep(LAnimated.duration);
             this.gameCards = cards;
             await MixinAction.edit(this.getRaw(), 'gameCards', cards);
             await MixinAction.edit(card.raw, 'animation', 'BlurIn');
